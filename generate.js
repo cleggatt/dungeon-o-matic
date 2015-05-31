@@ -69,6 +69,7 @@ angular.module('generateApp', [])
                 console.log("Cannot find a valid move!");
                 return undefined;
             };
+
             this.step = function() {
 
                 var newPosition = this.findValidPosition();
@@ -95,6 +96,7 @@ angular.module('generateApp', [])
                     return true;
                 }
             };
+
             this.convertDirection = function(direction) {
                 return (direction + 2) % 4;
             }
@@ -102,16 +104,23 @@ angular.module('generateApp', [])
 
         var GridCanvas = function GridCanvas(canvas) {
 
-            var cellSize = 50;
-
             this.canvas = canvas;
             this.active = false;
+            this.cellSize = 50;
+
+            this.setCellSize = function(cellSize) {
+                this.cellSize = cellSize;
+                if (this.grid) {
+                    this.canvas.width = this.grid.width * this.cellSize;
+                    this.canvas.height = this.grid.height * this.cellSize;
+                }
+            };
 
             this.setGrid = function(grid) {
                 this.grid = grid;
-                this.canvas.width = this.grid.width * cellSize;
-                this.canvas.height = this.grid.height * cellSize;
-            }
+                this.canvas.width = this.grid.width * this.cellSize;
+                this.canvas.height = this.grid.height * this.cellSize;
+            };
 
             this.activate = function() {
                 this.active = true;
@@ -140,19 +149,19 @@ angular.module('generateApp', [])
                     for (x = 0; x < this.grid.cells.length; x++) {
                         for (y = 0; y < this.grid.cells[x].length; y++) {
                             if (this.grid.cells[x][y].visited) {
-                                ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                                ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
                             }
                         }
                     }
 
                     ctx.fillStyle = '#FF0000';
-                    ctx.fillRect(this.grid.x * cellSize, this.grid.y * cellSize, cellSize, cellSize);
+                    ctx.fillRect(this.grid.x * this.cellSize, this.grid.y * this.cellSize, this.cellSize, this.cellSize);
                 }
 
                 ctx.beginPath();
                 for (x = 0; x < this.grid.cells.length; x++) {
                     for (y = 0; y < this.grid.cells[x].length; y++) {
-                        this.drawCell(ctx, x * cellSize, y * cellSize, this.grid.cells[x][y].walls);
+                        this.drawCell(ctx, x * this.cellSize, y * this.cellSize, this.grid.cells[x][y].walls);
                     }
                 }
                 ctx.stroke();
@@ -161,24 +170,24 @@ angular.module('generateApp', [])
             this.drawCell = function(ctx, x, y, walls) {
                 if (walls[0]) {
                     ctx.moveTo(x, y);
-                    ctx.lineTo(x + cellSize, y);
+                    ctx.lineTo(x + this.cellSize, y);
                 }
                 if (walls[1]) {
-                    ctx.moveTo(x + cellSize, y);
-                    ctx.lineTo(x + cellSize, y + cellSize);
+                    ctx.moveTo(x + this.cellSize, y);
+                    ctx.lineTo(x + this.cellSize, y + this.cellSize);
                 }
                 if (walls[2]) {
-                    ctx.moveTo(x, y + cellSize);
-                    ctx.lineTo(x + cellSize, y + cellSize);
+                    ctx.moveTo(x, y + this.cellSize);
+                    ctx.lineTo(x + this.cellSize, y + this.cellSize);
                 }
                 if (walls[3]) {
                     ctx.moveTo(x, y);
-                    ctx.lineTo(x, y + cellSize);
+                    ctx.lineTo(x, y + this.cellSize);
                 }
             };
         };
 
-        $scope.params = {width: 10, height: 10, speed : 50};
+        $scope.params = {width: 10, height: 10, size: 50, speed : 50};
 
         $scope.gridCanvas = new GridCanvas(document.getElementById("map"));
 
@@ -191,6 +200,7 @@ angular.module('generateApp', [])
 
             $scope.grid = new Grid($scope.params.width, $scope.params.height);
 
+            $scope.gridCanvas.setCellSize($scope.params.size);
             $scope.gridCanvas.setGrid($scope.grid);
             $scope.gridCanvas.activate();
 
