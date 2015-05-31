@@ -1,9 +1,8 @@
 angular.module('generateApp', [])
-    .factory('GridService', function() {
-
-        console.log("factory: GridService");
+    .controller('GeneratorController', ['$scope', '$interval', function($scope, $interval) {
 
         var Cell = function Cell() {
+
             this.walls = [true, true, true, true];
             this.visited = false;
             this.reset = function() {
@@ -32,21 +31,6 @@ angular.module('generateApp', [])
             this.y = Math.floor(Math.random() * height);
             this.cells[this.x][this.y].visited = true;
             this.history = [];
-
-            this.reset = function() {
-                console.log("Grid.reset()");
-                this.x = Math.floor(Math.random() * width);
-                this.y = Math.floor(Math.random() * height);
-
-                for (i = 0; i < this.cells.length; i++) {
-                    for (j = 0; j < this.cells[i].length; j++) {
-                        this.cells[i][j].reset();
-                    }
-                }
-
-                this.cells[this.x][this.y].visited = true;
-                this.history = [];
-            };
 
             this.findValidPosition = function() {
 
@@ -84,15 +68,13 @@ angular.module('generateApp', [])
 
                 console.log("Cannot find a valid move!");
                 return undefined;
-            }
-
+            };
             this.step = function() {
 
                 var newPosition = this.findValidPosition();
 
                 if (newPosition) {
                     this.cells[this.x][this.y].walls[newPosition[2]] = false;
-                    console.log(this.cells[this.x][this.y].walls);
                     this.history.push([this.x, this.y]);
 
                     this.x = newPosition[0];
@@ -101,32 +83,46 @@ angular.module('generateApp', [])
                     this.cells[this.x][this.y].visited = true;
                     console.log("Moved to (" + newPosition[0] + "," + newPosition[1] + ")");
 
-                    console.log(this.cells[this.x][this.y].walls);
+                    return true;
                 } else if (this.history.length == 0) {
                     console.log("All moves exhausted!");
+                    return false;
                 } else {
                     var last = this.history.pop();
                     console.log("Returning to (" + last[0] + "," + last[1] + ")...");
                     this.x = last[0];
-                    this.y = last[1]
+                    this.y = last[1];
+                    return true;
                 }
             };
-
             this.convertDirection = function(direction) {
                 return (direction + 2) % 4;
             }
         };
 
-        return new Grid(10, 10);
-    })
-    .controller('GeneratorController', ['$scope', 'GridService', function($scope, GridService) {
-        var generator = this;
+        var GridCanvas = function GridCanvas(canvas) {
 
-        var GridCanvas = function GridCanvas(grid, canvas) {
-            this.grid = grid;
+            var cellSize = 50;
+
             this.canvas = canvas;
-            this.render = function() {
+            this.active = false;
 
+            this.setGrid = function(grid) {
+                this.grid = grid;
+                this.canvas.width = this.grid.width * cellSize;
+                this.canvas.height = this.grid.height * cellSize;
+            }
+
+            this.activate = function() {
+                this.active = true;
+            };
+
+            this.deactivate = function() {
+                this.active = false;
+            };
+
+            this.render = function() {
+                // TODO Check for grid
                 console.log("GridCanvas.render()");
 
                 if (!this.canvas.getContext) {
@@ -139,23 +135,24 @@ angular.module('generateApp', [])
 
                 ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                ctx.fillStyle = '#8ED6FF';
-                for (x = 0; x < this.grid.cells.length; x++) {
-                    for (y = 0; y < this.grid.cells[x].length; y++) {
-                        if (this.grid.cells[x][y].visited) {
-                            ctx.fillRect(x * 50, y * 50, 50, 50);
+                if (this.active) {
+                    ctx.fillStyle = '#8ED6FF';
+                    for (x = 0; x < this.grid.cells.length; x++) {
+                        for (y = 0; y < this.grid.cells[x].length; y++) {
+                            if (this.grid.cells[x][y].visited) {
+                                ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                            }
                         }
                     }
-                }
 
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(this.grid.x * 50, this.grid.y * 50, 50, 50);
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillRect(this.grid.x * cellSize, this.grid.y * cellSize, cellSize, cellSize);
+                }
 
                 ctx.beginPath();
                 for (x = 0; x < this.grid.cells.length; x++) {
                     for (y = 0; y < this.grid.cells[x].length; y++) {
-                        //ctx.rect(x * 50, y * 50, 50, 50);
-                        this.drawCell(ctx, x * 50, y * 50, this.grid.cells[x][y].walls);
+                        this.drawCell(ctx, x * cellSize, y * cellSize, this.grid.cells[x][y].walls);
                     }
                 }
                 ctx.stroke();
@@ -164,38 +161,55 @@ angular.module('generateApp', [])
             this.drawCell = function(ctx, x, y, walls) {
                 if (walls[0]) {
                     ctx.moveTo(x, y);
-                    ctx.lineTo(x + 50, y);
+                    ctx.lineTo(x + cellSize, y);
                 }
                 if (walls[1]) {
-                    ctx.moveTo(x + 50, y);
-                    ctx.lineTo(x + 50, y + 50);
+                    ctx.moveTo(x + cellSize, y);
+                    ctx.lineTo(x + cellSize, y + cellSize);
                 }
                 if (walls[2]) {
-                    ctx.moveTo(x, y + 50);
-                    ctx.lineTo(x + 50, y + 50);
+                    ctx.moveTo(x, y + cellSize);
+                    ctx.lineTo(x + cellSize, y + cellSize);
                 }
                 if (walls[3]) {
                     ctx.moveTo(x, y);
-                    ctx.lineTo(x, y + 50);
+                    ctx.lineTo(x, y + cellSize);
                 }
             };
         };
 
-        this.gridCanvas = new GridCanvas(GridService, document.getElementById("map"));
+        $scope.params = {width: 10, height: 10, speed : 50};
 
-        generator.render = function() {
-            this.gridCanvas.render();
-        }
+        $scope.gridCanvas = new GridCanvas(document.getElementById("map"));
 
-        generator.reset = function() {
-            GridService.reset();
-            this.gridCanvas.render();
+        var stop;
+        $scope.startGeneration = function() {
+            // Don't start if we are already generating
+            if (angular.isDefined(stop)) {
+                return;
+            }
+
+            $scope.grid = new Grid($scope.params.width, $scope.params.height);
+
+            $scope.gridCanvas.setGrid($scope.grid);
+            $scope.gridCanvas.activate();
+
+            stop = $interval(function() {
+                var movesRemain = $scope.grid.step();
+
+                if (!movesRemain) {
+                    $scope.gridCanvas.deactivate();
+                    $scope.stopGeneration();
+                }
+
+                $scope.gridCanvas.render();
+            }, $scope.params.speed);
         };
 
-        generator.generate = function() {
-            GridService.step();
-            this.gridCanvas.render();
+        $scope.stopGeneration = function() {
+            if (angular.isDefined(stop)) {
+                $interval.cancel(stop);
+                stop = undefined;
+            }
         };
-
-        $scope.grid = GridService;
     }]);
