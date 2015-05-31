@@ -7,7 +7,7 @@
     <script src="generate.js"></script>
 </head>
 <body>
-    <div ng-controller="GeneratorController">
+    <div ng-controller="MazeController">
     <div>
         <label>
             Width: <input type="number" name="paramsWidth" ng-model="params.width" required>
@@ -24,6 +24,9 @@
     <div>
         <canvas id="map"></canvas>
         <p ng-show="gridCanvas.active">({{grid.x}}, {{grid.y}})</p>
+        <ul>
+            <li ng-repeat="history in grid.history">({{history[0]}}, {{history[1]}})</li>
+        </ul>
     </div>
     </div>
 </body>

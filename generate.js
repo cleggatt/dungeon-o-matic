@@ -1,5 +1,5 @@
 angular.module('generateApp', [])
-    .controller('GeneratorController', ['$scope', '$interval', function($scope, $interval) {
+    .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
 
         var Cell = function Cell() {
 
