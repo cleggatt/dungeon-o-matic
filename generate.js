@@ -4,13 +4,13 @@ angular.module('generateApp', [])
         console.log("factory: GridService");
 
         var Cell = function Cell() {
-            this.walls = [0, 0 , 0, 0];
+            this.walls = [true, true, true, true];
             this.visited = false;
             this.reset = function() {
-                this.walls[0] = 0;
-                this.walls[1] = 0;
-                this.walls[2] = 0;
-                this.walls[3] = 0;
+                this.walls[0] = true;
+                this.walls[1] = true;
+                this.walls[2] = true;
+                this.walls[3] = true;
                 this.visited = false;
             };
         };
@@ -75,7 +75,7 @@ angular.module('generateApp', [])
                     } else if (this.cells[newX][newY].visited) {
                         console.log("Cannot move - visited");
                     } else {
-                        return [newX, newY];
+                        return [newX, newY, direction];
                     }
 
                     count++;
@@ -91,12 +91,17 @@ angular.module('generateApp', [])
                 var newPosition = this.findValidPosition();
 
                 if (newPosition) {
+                    this.cells[this.x][this.y].walls[newPosition[2]] = false;
+                    console.log(this.cells[this.x][this.y].walls);
                     this.history.push([this.x, this.y]);
 
                     this.x = newPosition[0];
                     this.y = newPosition[1];
+                    this.cells[this.x][this.y].walls[this.convertDirection(newPosition[2])] = false;
                     this.cells[this.x][this.y].visited = true;
                     console.log("Moved to (" + newPosition[0] + "," + newPosition[1] + ")");
+
+                    console.log(this.cells[this.x][this.y].walls);
                 } else if (this.history.length == 0) {
                     console.log("All moves exhausted!");
                 } else {
@@ -106,6 +111,10 @@ angular.module('generateApp', [])
                     this.y = last[1]
                 }
             };
+
+            this.convertDirection = function(direction) {
+                return (direction + 2) % 4;
+            }
         };
 
         return new Grid(10, 10);
@@ -142,13 +151,34 @@ angular.module('generateApp', [])
                 ctx.fillStyle = '#FF0000';
                 ctx.fillRect(this.grid.x * 50, this.grid.y * 50, 50, 50);
 
+                ctx.beginPath();
                 for (x = 0; x < this.grid.cells.length; x++) {
                     for (y = 0; y < this.grid.cells[x].length; y++) {
-                        ctx.rect(x * 50, y * 50, 50, 50);
+                        //ctx.rect(x * 50, y * 50, 50, 50);
+                        this.drawCell(ctx, x * 50, y * 50, this.grid.cells[x][y].walls);
                     }
                 }
                 ctx.stroke();
-            }
+            };
+
+            this.drawCell = function(ctx, x, y, walls) {
+                if (walls[0]) {
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + 50, y);
+                }
+                if (walls[1]) {
+                    ctx.moveTo(x + 50, y);
+                    ctx.lineTo(x + 50, y + 50);
+                }
+                if (walls[2]) {
+                    ctx.moveTo(x, y + 50);
+                    ctx.lineTo(x + 50, y + 50);
+                }
+                if (walls[3]) {
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x, y + 50);
+                }
+            };
         };
 
         this.gridCanvas = new GridCanvas(GridService, document.getElementById("map"));
