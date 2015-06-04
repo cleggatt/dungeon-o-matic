@@ -19,6 +19,9 @@
             Size: <input type="number" name="paramsSize" ng-model="params.size" required>
         </label>
         <label>
+            % dead-ends: <input type="number" name="paramsDeadEnds" ng-model="params.deadEnds" required>
+        </label>
+        <label>
             Speed: <input type="number" name="paramsSpeed" ng-model="params.speed" required>
         </label>
         <button ng-click="startGeneration()">Start</button>
@@ -26,9 +29,13 @@
     </div>
     <div>
         <canvas id="map"></canvas>
+        <p>Corridors: {{mapGenerator.acc.deadEnds.length}}</p>
+        <ul>
+            <li ng-repeat="deadend in mapGenerator.acc.deadEnds">({{deadend.x}}, {{deadend.y}})</li>
+        </ul>
         <p ng-show="gridCanvas.active">({{grid.x}}, {{grid.y}})</p>
         <ul>
-            <li ng-repeat="history in grid.history">({{history[0]}}, {{history[1]}})</li>
+            <li ng-repeat="history in mapGenerator.acc.history">({{history[0]}}, {{history[1]}})</li>
         </ul>
     </div>
     </div>
