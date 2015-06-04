@@ -23,8 +23,6 @@ BlockCell.prototype.toString = function blockCellToString() {
 var WalledCell = function WalledCell(point) {
 
     this.location = point;
-
-    // TODO inherit from BlockCell
     this.clear = false;
     this.walls = [true, true, true, true];
 
@@ -69,7 +67,7 @@ var BlockGrid = function BlockGrid(width, height) {
             var newX = point.x;
             var newY = point.y;
 
-            // TODO Move into point
+            // TODO Should we move this into grid or Point or Cell?
             if (direction == 0) {
                 newY--;
             } else if (direction == 1) {
@@ -80,7 +78,7 @@ var BlockGrid = function BlockGrid(width, height) {
                 newX--;
             }
 
-            // TODO create getCell(x, y)
+            // TODO create getCell(x, y)?
             var neighbour = this.getCell(new Point(newX, newY));
             if (neighbour != null) {
                 neighbours.push(neighbour);
@@ -95,7 +93,7 @@ var BlockGrid = function BlockGrid(width, height) {
     };
 
     this.clearPath = function(from, to) {
-        // TODO Assume cells are adjacent
+        // TODO Check that cells are adjacent
         var fromCell = this.cells[from.x][from.y];
         var toCell = this.cells[to.x][to.y];
 
@@ -137,7 +135,7 @@ var WalledGrid = function WalledGrid(width, height) {
             var newX = point.x;
             var newY = point.y;
 
-            // TODO Move into point
+            // TODO Move into Point or Cell?
             if (direction == 0) {
                 newY--;
             } else if (direction == 1) {
@@ -162,7 +160,6 @@ var WalledGrid = function WalledGrid(width, height) {
         this.cells[point.x][point.y].clear = true;
     };
 
-    // TODO better name!
     // TODO Pass cell or points?
     this.clearPath = function(from, to) {
 
@@ -173,7 +170,7 @@ var WalledGrid = function WalledGrid(width, height) {
         toCell.clear = true;
 
         var direction;
-        // TODO Assume cells are immediately adjacent
+        // TODO Check that cells are adjacent
         if (from.y > to.y) {
             direction = 0;
         } else if (from.x < to.x) {

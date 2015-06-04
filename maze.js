@@ -97,7 +97,7 @@ var MazeBuilder = function MazeBuilder(grid) {
         acc.history = [];
         acc.deadEnds = [];
 
-        // TODO does this mean we're skipping an animation frame?
+        // TODO Check we are not skipping an animation frame.
         var x = Math.floor(Math.random() * this.grid.width);
         var y = Math.floor(Math.random() * this.grid.height);
         this.location = new Point(x, y);

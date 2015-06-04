@@ -1,6 +1,5 @@
 // TODO Make private to module
 // TODO Rename
-// TODO Fix up log messages
 var NewValidWalledCellSelector = function ValidBlockCellSelector(grid) {
 
     this.grid = grid;
@@ -10,11 +9,11 @@ var NewValidWalledCellSelector = function ValidBlockCellSelector(grid) {
         console.log('Finding valid position from ' + fromPoint + '...');
 
         var direction = this.findSingleExit(this.grid.getCell(fromPoint).walls);
-
         if (direction != -1) {
             var newX = fromPoint.x;
             var newY = fromPoint.y;
 
+            // TODO Should we move this into grid or Point, Cell or Grid?
             if (direction == 0) {
                 newY--;
             } else if (direction == 1) {
@@ -24,14 +23,10 @@ var NewValidWalledCellSelector = function ValidBlockCellSelector(grid) {
             } else { // (direction == 3)
                 newX--;
             }
-
             var newPosition = new Point(newX, newY);
-
-            console.log('Moving to ' + newPosition);
 
             return newPosition;
         } else {
-            console.log("No valid positions!");
             return null;
         }
     };
@@ -61,30 +56,13 @@ var NewValidWalledCellSelector = function ValidBlockCellSelector(grid) {
 
 // TODO Make private to module
 // TODO Rename
-// TODO Fix up log messages
 var NewValidBlockCellSelector = function NewValidBlockCellSelector(grid) {
     this.grid = grid;
 
     this.findValidPosition = function(fromPoint) {
 
-        console.log('Finding valid position from ' + fromPoint + '...');
-
-        var newPosition = this.findSingleExit(fromPoint);
-
-        if (newPosition) {
-            console.log('Moving to ' + newPosition);
-            return newPosition;
-        } else {
-            console.log("No valid positions!");
-            return null;
-        }
-    };
-
-    // TODO Collapse into calling function
-    this.findSingleExit = function(fromPoint) {
-
         var neighbours = this.grid.getNeighbours(fromPoint);
-        console.log("Checking for single clear neighbour: " + neighbours + "...");
+        console.log("Finding valid position from: " + neighbours + "...");
 
         var lastExit = null;
         for (var idx = 0; idx < neighbours.length; idx++) {
@@ -93,7 +71,7 @@ var NewValidBlockCellSelector = function NewValidBlockCellSelector(grid) {
                 if (lastExit == null) {
                     lastExit = neighbour;
                 } else {
-                    console.log("Multiple clear neighbour!");
+                    console.log("Multiple clear neighbours!");
                     return null;
                 }
             }
@@ -132,11 +110,13 @@ var DeadEndFiller = function DeadEndFiller(grid, deadendPercentage) {
 
         this.position = this.cellSelector.findValidPosition(this.position);
         if (this.position) {
+            console.log('Moving to ' + this.position);
             this.fillCell(oldPosition);
         } else {
+            console.log("No valid positions!");
             this.position = this.pickDeadEnd();
             if (this.position) {
-                console.log("Jumping to (" + this.position.x + "," + this.position.y + ")");
+                console.log('Jumping to ' + this.position);
             } else {
                 // Terminal case: original cell
                 this.fillCell(oldPosition);

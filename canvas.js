@@ -20,17 +20,17 @@ var GridCanvas = function GridCanvas(canvas, acc) {
         this.drawWalls = (grid instanceof WalledGrid);
     };
 
-    // TODO Rename. State data?
+    // TODO Rename - Shall we call this "state data"?
     this.setAcc = function(acc) {
         this.acc = acc;
     };
 
     this.render = function() {
-        // TODO Check for grid
+        // TODO Check for grid and acc
         console.log("GridCanvas.render()");
 
         if (!this.canvas.getContext) {
-            // TODO ERROR
+            // TODO Handle this error
             return;
         }
 

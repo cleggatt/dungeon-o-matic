@@ -5,7 +5,7 @@ var MapGenerator = function MapGenerator(builders) {
     var allBuilders = builders.slice(0);
     var currentBuilder = allBuilders.shift();
 
-    // TODO Handle false from this
+    // TODO Handle a false return value from this
     currentBuilder.init(this.acc);
 
     this.step = function() {
