@@ -112,9 +112,6 @@ FILLER.DeadEndFiller.prototype.step = function(acc) {
         this.position = this.pickDeadEnd();
         if (this.position) {
             console.log('Jumping to ' + this.position);
-        } else {
-            // Terminal case: original cell
-            this.fillCell(oldPosition);
         }
     }
 
@@ -122,6 +119,8 @@ FILLER.DeadEndFiller.prototype.step = function(acc) {
     return (this.position != null);
 };
 FILLER.DeadEndFiller.prototype.pickDeadEnd = function() {
+
+    console.log("Finding valid dead end while keeping " + this.deadEndsToKeep);
 
     if (this.deadEnds.length == 0 || this.deadEnds.length == this.deadEndsToKeep) {
         console.log("No remaining dead ends...");
