@@ -49,6 +49,17 @@ GRID.BlockGrid = function(width, height) {
         }
     }
 }
+GRID.BlockGrid.prototype.clone = function() {
+
+    // TODO This could be more efficient and just initialise the cells on creation
+    var clone = new GRID.BlockGrid(this.width, this.height);
+    for (var x = 0; x < this.cells.length; x++) {
+        for (var y = 0; y < this.cells[x].length; y++) {
+            clone.cells[x][y].clear = this.cells[x][y].clear;
+        }
+    }
+    return clone;
+};
 GRID.BlockGrid.prototype.getCell = function(point) {
     if (point.x < 0 || point.x >= this.width || point.y < 0 || point.y >= this.height) {
         return null;
@@ -56,6 +67,7 @@ GRID.BlockGrid.prototype.getCell = function(point) {
 
     return this.cells[point.x][point.y];
 };
+// TODO Rename
 GRID.BlockGrid.prototype.getNeighbours = function(point) {
     var neighbours = [];
 
@@ -78,6 +90,29 @@ GRID.BlockGrid.prototype.getNeighbours = function(point) {
         var neighbour = this.getCell(new GRID.Point(newX, newY));
         if (neighbour != null) {
             neighbours.push(neighbour);
+        }
+    }
+
+    return neighbours;
+};
+GRID.BlockGrid.prototype.getAllNeighbours = function(point) {
+    var neighbours = [];
+
+    for (var x = -1; x < 2; x++) {
+        for (var y = -1; y < 2; y++) {
+
+            if (x == 0 && y == 0) {
+                continue;
+            }
+
+            var newX = point.x + x;
+            var newY = point.y + y;
+
+            // TODO create getCell(x, y)?
+            var neighbour = this.getCell(new GRID.Point(newX, newY));
+            if (neighbour != null) {
+                neighbours.push(neighbour);
+            }
         }
     }
 
