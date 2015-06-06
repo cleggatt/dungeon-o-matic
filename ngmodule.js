@@ -1,8 +1,10 @@
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
-        $scope.params = {walls: true, width: 5, height: 5, size: 50, deadEnds: 100, speed : 50};
+        $scope.params = {walls: true, width: 5, height: 5, size: 50, deadEnds: 50, speed : 50};
 
         $scope.gridCanvas = new CANVAS.GridCanvas(document.getElementById("map"));
+
+        $scope.running = false;
 
         var stop;
         $scope.startGeneration = function() {
@@ -10,6 +12,8 @@ angular.module('generateApp', [])
             if (angular.isDefined(stop)) {
                 return;
             }
+
+            $scope.running = true;
 
             $scope.grid = $scope.params.walls ? new GRID.WalledGrid($scope.params.width, $scope.params.height) :
                 new GRID.BlockGrid($scope.params.width, $scope.params.height);
@@ -38,6 +42,7 @@ angular.module('generateApp', [])
             if (angular.isDefined(stop)) {
                 $interval.cancel(stop);
                 stop = undefined;
+                $scope.running = false;
             }
         };
     }]);

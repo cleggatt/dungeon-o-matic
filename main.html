@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html ng-app="generateApp">
-    <head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="UTF-8">
-    <title></title>
+<html lang="en" ng-app="generateApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dungeon-o-matic</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
     <script src="grid.js"></script>
     <script src="maze.js"></script>
@@ -12,40 +20,92 @@
     <script src="ngmodule.js"></script>
 </head>
 <body>
-    <div ng-controller="MazeController">
-    <div>
-        <label>
-            Walls? <input type="checkbox" name="paramsWalls" ng-model="params.walls" required>
-        </label>
-        <label>
-            Width: <input type="number" name="paramsWidth" ng-model="params.width" required>
-        </label>
-        <label>
-            Height: <input type="number" name="paramsHeight" ng-model="params.height" required>
-        </label>
-        <label>
-            Size: <input type="number" name="paramsSize" ng-model="params.size" required>
-        </label>
-        <label>
-            % dead-ends: <input type="number" name="paramsDeadEnds" ng-model="params.deadEnds" required>
-        </label>
-        <label>
-            Speed: <input type="number" name="paramsSpeed" ng-model="params.speed" required>
-        </label>
-        <button ng-click="startGeneration()">Start</button>
-        <button ng-click="stopGeneration()">Stop</button>
+<div class="container-fluid" ng-controller="MazeController">
+    <div class="row">
+        <div class="col-md-3">
+            <div>
+                <form class="form-horizontal">
+                    <div class="form-group form-group-sm">
+                        <label for="paramsWidth" class="col-sm-6 control-label">Width</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="paramsWidth" ng-model="params.width" required class="form-control" id="paramsWidth">
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="paramsHeight" class="col-sm-6 control-label">Height</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="paramsHeight" ng-model="params.height" required class="form-control" id="paramsHeight">
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <div class="col-sm-offset-6 col-sm-6">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="paramsWalls" ng-model="params.walls" required>Walls
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="paramsSize" class="col-sm-6 control-label">Cell size</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" name="paramsSize" ng-model="params.size" required class="form-control" id="paramsSize">
+                                <div class="input-group-addon"><small>px</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="paramsDeadEnds" class="col-sm-6 control-label">Dead ends to keep</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" name="paramsDeadEnds" ng-model="params.deadEnds" required class="form-control" id="paramsDeadEnds">
+                                <div class="input-group-addon"><small>%</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="paramsSpeed" class="col-sm-6 control-label">Animation speed</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" name="paramsSpeed" ng-model="params.speed" required class="form-control" id="paramsSpeed">
+                                <div class="input-group-addon"><small>ms</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-6">
+                            <button ng-click="startGeneration()" ng-disabled="running" class="btn btn-success">Start</button>
+                            <button ng-click="stopGeneration()" ng-disabled="!running" class="btn btn-danger">Stop</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div ng-show="running">
+                <p ng-show="gridCanvas.active">Current location: ({{grid.x}}, {{grid.y}})</p>
+                <p>Corridors: {{mapGenerator.acc.deadEnds.length}}</p>
+                <div style="height: 200px; overflow: scroll">
+                    <p>
+                        Dead ends:
+                        <ul class="list-unstyled">
+                            <li ng-repeat="deadend in mapGenerator.acc.deadEnds">({{deadend.x}}, {{deadend.y}})</li>
+                        </ul>
+                    </p>
+                </div>
+                <div style="height: 200px; overflow: scroll">
+                    <p>
+                        Current stack:
+                        <ul class="list-unstyled">
+                            <li ng-repeat="history in mapGenerator.acc.history">({{history.x}}, {{history.y}})</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <canvas id="map"></canvas>
+        </div>
     </div>
-    <div>
-        <canvas id="map"></canvas>
-        <p>Corridors: {{mapGenerator.acc.deadEnds.length}}</p>
-        <ul>
-            <li ng-repeat="deadend in mapGenerator.acc.deadEnds">({{deadend.x}}, {{deadend.y}})</li>
-        </ul>
-        <p ng-show="gridCanvas.active">({{grid.x}}, {{grid.y}})</p>
-        <ul>
-            <li ng-repeat="history in mapGenerator.acc.history">({{history[0]}}, {{history[1]}})</li>
-        </ul>
-    </div>
-    </div>
+</div>
 </body>
 </html>

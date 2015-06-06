@@ -9,7 +9,7 @@ MAP.Generator = function(builders) {
 
     // TODO Handle a false return value from this
     this.currentBuilder.init(this.acc);
-}
+};
 MAP.Generator.prototype.step = function() {
 
     if (this.currentBuilder.step(this.acc)) {
