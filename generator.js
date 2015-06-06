@@ -1,25 +1,26 @@
-var MapGenerator = function MapGenerator(builders) {
+var MAP = MAP || {};
+
+MAP.Generator = function(builders) {
 
     this.acc = {};
 
-    var allBuilders = builders.slice(0);
-    var currentBuilder = allBuilders.shift();
+    this.allBuilders = builders.slice(0);
+    this.currentBuilder = this.allBuilders.shift();
 
     // TODO Handle a false return value from this
-    currentBuilder.init(this.acc);
+    this.currentBuilder.init(this.acc);
+}
+MAP.Generator.prototype.step = function() {
 
-    this.step = function() {
-
-        if (currentBuilder.step(this.acc)) {
-            return true;
-        }
-
-        if (allBuilders.length == 0) {
-            return false;
-        }
-
-        currentBuilder = allBuilders.shift();
-
-        return currentBuilder.init(this.acc);
+    if (this.currentBuilder.step(this.acc)) {
+        return true;
     }
+
+    if (this.allBuilders.length == 0) {
+        return false;
+    }
+
+    this.currentBuilder = this.allBuilders.shift();
+
+    return this.currentBuilder.init(this.acc);
 };

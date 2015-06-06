@@ -2,7 +2,7 @@ angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
         $scope.params = {walls: true, width: 5, height: 5, size: 50, deadEnds: 100, speed : 50};
 
-        $scope.gridCanvas = new GridCanvas(document.getElementById("map"));
+        $scope.gridCanvas = new CANVAS.GridCanvas(document.getElementById("map"));
 
         var stop;
         $scope.startGeneration = function() {
@@ -11,12 +11,12 @@ angular.module('generateApp', [])
                 return;
             }
 
-            $scope.grid = $scope.params.walls ? new WalledGrid($scope.params.width, $scope.params.height) :
-                new BlockGrid($scope.params.width, $scope.params.height);
+            $scope.grid = $scope.params.walls ? new GRID.WalledGrid($scope.params.width, $scope.params.height) :
+                new GRID.BlockGrid($scope.params.width, $scope.params.height);
 
-            $scope.mapGenerator = new MapGenerator([
-                new MazeBuilder($scope.grid),
-                new DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
+            $scope.mapGenerator = new MAP.Generator([
+                new MAZE.Generator($scope.grid),
+                new FILLER.DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
             ]);
 
             $scope.gridCanvas.setCellSize($scope.params.size);
