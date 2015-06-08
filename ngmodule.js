@@ -68,6 +68,10 @@ angular.module('generateApp', [])
             }
         };
 
+        $scope.stepGeneration = function() {
+            animator();
+        };
+
         // This is an artificial state - it's just paused with the flags set so as no to allow un-pausing
         $scope.stopGeneration = function() {
             stopAnimator();
