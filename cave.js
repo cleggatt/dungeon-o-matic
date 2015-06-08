@@ -36,7 +36,7 @@ CAVE.Generator.prototype.step = function(acc) {
             var allNeighbours = oldGrid.getAllNeighbours(p);
             for (var n = 0; n < allNeighbours.length; n++) {
                 var neighbour = allNeighbours[n];
-                if (neighbour.clear) {
+                if (neighbour && neighbour.clear) {
                     aliveNeighbours++;
                 }
             }
