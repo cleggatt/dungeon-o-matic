@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div ng-show="params.type =='Dungeon'" class="form-group form-group-sm">
-                        <label for="paramsDeadEnds" class="col-sm-6 control-label">Dead ends to keep</label>
+                        <label for="paramsDeadEnds" class="col-sm-6 control-label">Remaining dead ends</label>
                         <div class="col-sm-6">
                             <div class="input-group">
                                 <input type="number" name="paramsDeadEnds" ng-model="params.deadEnds" required class="form-control" id="paramsDeadEnds">
@@ -98,9 +98,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-6">
-                            <button ng-click="startGeneration()" ng-disabled="running" class="btn btn-success">Start</button>
-                            <button ng-click="stopGeneration()" ng-disabled="!running" class="btn btn-danger">Stop</button>
+                        <div class="col-sm-offset-3 col-sm-12 btn-group">
+                            <button ng-click="startGeneration()" ng-disabled="generating" class="btn btn-success">Start</button>
+                            <button ng-click="pauseGeneration()" ng-disabled="!generating" ng-class="paused ? 'active' : ''" class="btn btn-info">Pause</button>
+                            <button ng-click="stopGeneration()" ng-disabled="!generating" class="btn btn-danger">Stop</button>
                         </div>
                     </div>
                 </form>

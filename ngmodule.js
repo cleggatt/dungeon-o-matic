@@ -4,16 +4,35 @@ angular.module('generateApp', [])
 
         $scope.gridCanvas = new CANVAS.GridCanvas(document.getElementById("map"));
 
-        $scope.running = false;
+        $scope.generating = false;
+        $scope.paused = false;
 
-        var stop;
+        var animator = function () {
+            var stepsRemain = $scope.mapGenerator.step();
+            if (!stepsRemain) {
+                $scope.stopGeneration();
+            }
+            $scope.gridCanvas.render();
+        };
+
+        var animatorPromise;
+        var startAnimator = function () {
+            $scope.paused = false;
+            animatorPromise = $interval(animator, $scope.params.speed);
+        };
+        var stopAnimator = function () {
+            $scope.paused = true;
+            if (angular.isDefined(animatorPromise)) {
+                $interval.cancel(animatorPromise);
+                animatorPromise = undefined;
+            }
+        };
+
         $scope.startGeneration = function() {
-            // Don't start if we are already generating
-            if (angular.isDefined(stop)) {
+            if ($scope.generating) {
                 return;
             }
-
-            $scope.running = true;
+            $scope.generating = true;
 
             var builders;
 
@@ -38,22 +57,27 @@ angular.module('generateApp', [])
             $scope.gridCanvas.setGrid($scope.grid);
             $scope.gridCanvas.setAcc($scope.mapGenerator.acc);
 
-            stop = $interval(function() {
-                var stepsRemain = $scope.mapGenerator.step();
-
-                if (!stepsRemain) {
-                    $scope.stopGeneration();
-                }
-
-                $scope.gridCanvas.render();
-            }, $scope.params.speed);
+            startAnimator();
         };
 
-        $scope.stopGeneration = function() {
-            if (angular.isDefined(stop)) {
-                $interval.cancel(stop);
-                stop = undefined;
-                $scope.running = false;
+        $scope.pauseGeneration = function() {
+            if ($scope.paused) {
+                startAnimator();
+            } else {
+                stopAnimator ();
             }
         };
+
+        // This is an artificial state - it's just paused with the flags set so as no to allow un-pausing
+        $scope.stopGeneration = function() {
+            stopAnimator();
+            $scope.generating = false;
+            $scope.paused = false;
+        };
+
+        $scope.$on('$destroy', function() {
+            if (angular.isDefined(animatorPromise)) {
+                $interval.cancel(animatorPromise);
+            }
+        });
     }]);
