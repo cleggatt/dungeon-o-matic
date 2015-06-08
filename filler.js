@@ -1,11 +1,10 @@
-// TODO Make private to module
+// TODO Check what can be module-private
 var FILLER = FILLER || {};
 
-// TODO Rename
-FILLER.NewValidWalledCellSelector = function(grid) {
+FILLER.ValidWalledCellSelector = function(grid) {
     this.grid = grid;
 };
-FILLER.NewValidWalledCellSelector.prototype.findValidPosition = function(fromPoint) {
+FILLER.ValidWalledCellSelector.prototype.findValidPosition = function(fromPoint) {
 
     console.log('Finding valid position from ' + fromPoint + '...');
 
@@ -31,7 +30,7 @@ FILLER.NewValidWalledCellSelector.prototype.findValidPosition = function(fromPoi
         return null;
     }
 };
-FILLER.NewValidWalledCellSelector.prototype.findSingleExit = function(walls) {
+FILLER.ValidWalledCellSelector.prototype.findSingleExit = function(walls) {
 
     var lastExit = -1;
     for (var direction = 0; direction < 4; direction++) {
@@ -53,19 +52,17 @@ FILLER.NewValidWalledCellSelector.prototype.findSingleExit = function(walls) {
     return lastExit;
 };
 
-// TODO Rename
-FILLER.NewValidBlockCellSelector = function(grid) {
+FILLER.ValidBlockCellSelector = function(grid) {
     this.grid = grid;
 };
-
-FILLER.NewValidBlockCellSelector.prototype.findValidPosition = function(fromPoint) {
-    var neighbours = this.grid.getNeighbours(fromPoint);
+FILLER.ValidBlockCellSelector.prototype.findValidPosition = function(fromPoint) {
+    var neighbours = this.grid.getAdjacentNeighbours(fromPoint);
     console.log("Finding valid position from: " + neighbours + "...");
 
     var lastExit = null;
     for (var idx = 0; idx < neighbours.length; idx++) {
         var neighbour = neighbours[idx];
-        if (neighbour.clear) {
+        if (neighbour && neighbour.clear) {
             if (lastExit == null) {
                 lastExit = neighbour;
             } else {
@@ -83,7 +80,7 @@ FILLER.DeadEndFiller = function(grid, deadEndPercentage) {
     this.grid = grid;
     this.deadEndPercentage = deadEndPercentage;
 
-    this.cellSelector = (this.grid instanceof GRID.WalledGrid) ? new FILLER.NewValidWalledCellSelector(this.grid) : new FILLER.NewValidBlockCellSelector(this.grid);
+    this.cellSelector = (this.grid instanceof GRID.WalledGrid) ? new FILLER.ValidWalledCellSelector(this.grid) : new FILLER.ValidBlockCellSelector(this.grid);
 };
 FILLER.DeadEndFiller.prototype.init = function(acc) {
 

@@ -6,45 +6,54 @@ MAZE.ValidBlockCellSelector = function(grid) {
 };
 MAZE.ValidBlockCellSelector.prototype.findValidCell = function(startingPoint) {
 
-    var neighbourCells = this.grid.getNeighbours(startingPoint);
+    var neighbourCells = this.grid.getAdjacentNeighbours(startingPoint);
     var numNeighbours = neighbourCells.length;
-    console.log("Checking cells " + neighbourCells + "...");
+    console.log("Checking cells " + GRID.toString(neighbourCells) + "...");
 
     var count = 0;
-    var idx = Math.floor(Math.random() * numNeighbours);
+    var direction = Math.floor(Math.random() * numNeighbours);
     while (count < neighbourCells.length) {
-        var neighbourCell = neighbourCells[idx];
-        console.log("Checking cell " + neighbourCell + "...");
-        if (neighbourCell.clear) {
-            console.log(neighbourCell.location + " is an invalid target cell - has already been cleared");
-
-        } else if (this.isValidNewLocation(startingPoint, neighbourCell)) {
-            console.log(neighbourCell.location + " is a valid target cell");
-            return neighbourCell;
-        } else {
-            console.log("Invalid target cell - has clear neighbours");
+        var neighbourCell = neighbourCells[direction];
+        if (neighbourCell != null) {
+            console.log("Checking cell " + neighbourCell + " in direction " + direction + "...");
+            if (neighbourCell.clear) {
+                console.log(neighbourCell.location + " is an invalid target cell - has already been cleared");
+            } else if (this.isValidNewLocation(neighbourCell, direction)) {
+                console.log(neighbourCell.location + " is a valid target cell");
+                return neighbourCell;
+            } else {
+                console.log("Invalid target cell - has clear neighbours");
+            }
         }
 
         count++;
-        idx = (idx + 1) % numNeighbours;
+        direction = (direction + 1) % numNeighbours;
     }
 
     console.log("Cannot find a valid cell!");
     return null;
 };
-MAZE.ValidBlockCellSelector.prototype.isValidNewLocation = function(fromPoint, toCell) {
-    var neighbours = this.grid.getNeighbours(toCell.location);
-    console.log("Checking for clear neighbours: " + neighbours + "...");
+MAZE.ValidBlockCellSelector.prototype.isValidNewLocation = function(cell, direction) {
 
-    for (var idx = 0; idx < neighbours.length; idx++) {
-        var neighbour = neighbours[idx];
+    var directionsToCheck;
+    if (direction == 1) {
+        directionsToCheck = [0, 1, 2, 3, 7];
+    } else if (direction == 3) {
+        directionsToCheck = [1, 2, 3, 4, 5];
+    } else if (direction == 5) {
+        directionsToCheck = [3, 4, 5, 6, 7];
+    } else { // direction == 7
+        directionsToCheck = [0, 1, 5, 6, 7];
+    }
 
-        if (neighbour.location.equals(fromPoint)) {
-            console.log("Ignoring original cell: " + neighbour);
-            continue;
-        }
+    var neighbours = this.grid.getAllNeighbours(cell.location);
+    for (var idx = 0; idx < directionsToCheck.length; idx++) {
 
-        if (neighbour.clear) {
+        var directionToCheck = directionsToCheck[idx];
+        var neighbour = neighbours[directionToCheck];
+
+        console.log("Checking neighbour in direction " + directionToCheck + ": " + neighbour);
+        if (neighbour != null && neighbour.clear) {
             console.log("Found non-clear neighbour: " + neighbour);
             return false;
         }
@@ -58,19 +67,21 @@ MAZE.ValidWalledCellSelector = function ValidWalledCellSelector(grid) {
 };
 MAZE.ValidWalledCellSelector.prototype.findValidCell = function(startingPoint) {
 
-    var neighbourCells = this.grid.getNeighbours(startingPoint);
+    var neighbourCells = this.grid.getAdjacentNeighbours(startingPoint);
     var numNeighbours = neighbourCells.length;
-    console.log("Checking cells " + neighbourCells + "...");
+    console.log("Checking cells " + GRID.toString(neighbourCells) + "...");
 
     var count = 0;
     var idx = Math.floor(Math.random() * numNeighbours);
     while (count < neighbourCells.length) {
         var neighbourCell = neighbourCells[idx];
-        if (neighbourCell.clear) {
-            console.log(neighbourCell.location + " is an invalid target cell - has already been cleared");
-        } else {
-            console.log(neighbourCell.location + " is a valid target cell");
-            return neighbourCell;
+        if (neighbourCell != null) {
+            if (neighbourCell.clear) {
+                console.log(neighbourCell.location + " is an invalid target cell - has already been cleared");
+            } else {
+                console.log(neighbourCell.location + " is a valid target cell");
+                return neighbourCell;
+            }
         }
 
         count++;
@@ -103,6 +114,8 @@ MAZE.Generator.prototype.init = function(acc) {
     return true;
 };
 MAZE.Generator.prototype.step = function(acc) {
+
+    console.log("Current location is " + this.location);
 
     var newCell = this.cellSelector.findValidCell(this.location);
     if (newCell) {

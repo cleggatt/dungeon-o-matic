@@ -1,6 +1,24 @@
 // TODO Check what can be module-private
 var GRID = GRID || {};
 
+GRID.toString = function(o) {
+    if (o instanceof Array) {
+        var buff = "";
+        for (var idx = 0; idx < o.length; idx++) {
+            var item = o[idx];
+            if (item) {
+                buff += o[idx].toString() + ', ';
+            } else {
+                buff += 'null, ';
+            }
+        }
+        return buff.slice(0, -2);
+
+    } else {
+        return o.toString()
+    }
+};
+
 GRID.Point = function(x, y) {
     this.x = x;
     this.y = y;
@@ -37,7 +55,6 @@ GRID.WalledCell.prototype.toString = function() {
 };
 
 GRID.BlockGrid = function(width, height) {
-
     this.width = width;
     this.height = height;
 
@@ -48,9 +65,8 @@ GRID.BlockGrid = function(width, height) {
             this.cells[x][y] = new GRID.BlockCell(new GRID.Point(x, y));
         }
     }
-}
+};
 GRID.BlockGrid.prototype.clone = function() {
-
     // TODO This could be more efficient and just initialise the cells on creation
     var clone = new GRID.BlockGrid(this.width, this.height);
     for (var x = 0; x < this.cells.length; x++) {
@@ -67,54 +83,31 @@ GRID.BlockGrid.prototype.getCell = function(point) {
 
     return this.cells[point.x][point.y];
 };
-// TODO Rename
-GRID.BlockGrid.prototype.getNeighbours = function(point) {
-    var neighbours = [];
+GRID.BlockGrid.prototype.getAdjacentNeighbours = function(point) {
+    var neighbours = [ null, null, null, null, null, null, null, null];
 
-    for (var direction = 0; direction < 4; direction++) {
-        var newX = point.x;
-        var newY = point.y;
-
-        // TODO Should we move this into grid or Point or Cell?
-        if (direction == 0) {
-            newY--;
-        } else if (direction == 1) {
-            newX++;
-        } else if (direction == 2) {
-            newY++;
-        } else { // (direction == 3)
-            newX--;
-        }
-
-        // TODO create getCell(x, y)?
-        var neighbour = this.getCell(new GRID.Point(newX, newY));
-        if (neighbour != null) {
-            neighbours.push(neighbour);
-        }
-    }
+    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
+    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
+    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
+    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
 
     return neighbours;
 };
 GRID.BlockGrid.prototype.getAllNeighbours = function(point) {
-    var neighbours = [];
 
-    for (var x = -1; x < 2; x++) {
-        for (var y = -1; y < 2; y++) {
+    var neighbours = [ null, null, null, null, null, null, null, null];
 
-            if (x == 0 && y == 0) {
-                continue;
-            }
+    neighbours[0] = this.getCell(new GRID.Point(point.x - 1, point.y - 1));
+    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
+    neighbours[2] = this.getCell(new GRID.Point(point.x + 1, point.y - 1));
 
-            var newX = point.x + x;
-            var newY = point.y + y;
+    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
 
-            // TODO create getCell(x, y)?
-            var neighbour = this.getCell(new GRID.Point(newX, newY));
-            if (neighbour != null) {
-                neighbours.push(neighbour);
-            }
-        }
-    }
+    neighbours[4] = this.getCell(new GRID.Point(point.x + 1, point.y + 1));
+    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
+    neighbours[6] = this.getCell(new GRID.Point(point.x - 1, point.y + 1));
+
+    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
 
     return neighbours;
 };
@@ -155,30 +148,31 @@ GRID.WalledGrid.prototype.getCell = function(point) {
 
     return this.cells[point.x][point.y];
 };
-GRID.WalledGrid.prototype.getNeighbours = function(point) {
-    var neighbours = [];
+GRID.WalledGrid.prototype.getAdjacentNeighbours = function(point) {
+    var neighbours = [ null, null, null, null, null, null, null, null];
 
-    for (var direction = 0; direction < 4; direction++) {
-        var newX = point.x;
-        var newY = point.y;
+    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
+    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
+    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
+    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
 
-        // TODO Move into Point or Cell?
-        if (direction == 0) {
-            newY--;
-        } else if (direction == 1) {
-            newX++;
-        } else if (direction == 2) {
-            newY++;
-        } else { // (direction == 3)
-            newX--;
-        }
+    return neighbours;
+};
+GRID.WalledGrid.prototype.getAllNeighbours = function(point) {
 
-        // TODO create getCell(x, y)
-        var neighbour = this.getCell(new GRID.Point(newX, newY));
-        if (neighbour != null) {
-            neighbours.push(neighbour);
-        }
-    }
+    var neighbours = [ null, null, null, null, null, null, null, null];
+
+    neighbours[0] = this.getCell(new GRID.Point(point.x - 1, point.y - 1));
+    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
+    neighbours[2] = this.getCell(new GRID.Point(point.x + 1, point.y - 1));
+
+    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
+
+    neighbours[4] = this.getCell(new GRID.Point(point.x + 1, point.y + 1));
+    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
+    neighbours[6] = this.getCell(new GRID.Point(point.x - 1, point.y + 1));
+
+    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
 
     return neighbours;
 };
