@@ -70,6 +70,24 @@
                             </div>
                         </div>
                     </div>
+                    <div ng-show="params.type =='Cave'" class="form-group form-group-sm">
+                        <label for="paramsBirthThreshold" class="col-sm-6 control-label">Birth threshold</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="paramsBirthThreshold" ng-model="params.birthThreshold" required class="form-control" id="paramsBirthThreshold">
+                        </div>
+                    </div>
+                    <div ng-show="params.type =='Cave'" class="form-group form-group-sm">
+                        <label for="paramsDeathThreshold" class="col-sm-6 control-label">Death threshold</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="paramsDeathThreshold" ng-model="params.deathThreshold" required class="form-control" id="paramsDeathThreshold">
+                        </div>
+                    </div>
+                    <div ng-show="params.type =='Cave'" class="form-group form-group-sm">
+                        <label for="paramsIterations" class="col-sm-6 control-label">Iterations</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="paramsIterations" ng-model="params.iterations" required class="form-control" id="paramsIterations">
+                        </div>
+                    </div>
                     <div class="form-group form-group-sm">
                         <label for="paramsSpeed" class="col-sm-6 control-label">Animation speed</label>
                         <div class="col-sm-6">

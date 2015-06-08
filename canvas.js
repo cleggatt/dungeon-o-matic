@@ -51,10 +51,12 @@ CANVAS.GridCanvas.prototype.render = function() {
     }
 
     // Draw any history
-    ctx.fillStyle = '#0000FF';
-    for (x = 0; x < this.acc.history.length; x++) {
-        var point = this.acc.history[x];
-        ctx.fillRect(point.x * this.cellSize, point.y * this.cellSize, this.cellSize, this.cellSize);
+    if (this.acc.history) {
+        ctx.fillStyle = '#0000FF';
+        for (x = 0; x < this.acc.history.length; x++) {
+            var point = this.acc.history[x];
+            ctx.fillRect(point.x * this.cellSize, point.y * this.cellSize, this.cellSize, this.cellSize);
+        }
     }
 
     // Draw any active cell

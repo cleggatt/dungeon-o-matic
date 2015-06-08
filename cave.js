@@ -1,16 +1,14 @@
 var CAVE = CAVE || {};
 
-CAVE.Generator = function(grid) {
+CAVE.Generator = function(grid, iterations, birthThreshold, deathThreshold) {
     // TODO Must be a BlockGrid
     this.grid = grid;
+    this.birthThreshold = birthThreshold;
+    this.deathThreshold = deathThreshold;
+    this.maxIterations = iterations;
     this.iterations = 0;
 };
 CAVE.Generator.prototype.init = function(acc) {
-
-    // TODO Move clearing of these into ngmoduleor generator?
-    acc.reversing = false;
-    acc.history = [];
-    acc.deadEnds = [];
 
     for (var x = 0; x < this.grid.cells.length; x++) {
         for (var y = 0; y < this.grid.cells[x].length; y++) {
@@ -23,11 +21,6 @@ CAVE.Generator.prototype.init = function(acc) {
     return true;
 };
 CAVE.Generator.prototype.step = function(acc) {
-
-
-    // TODO Parameterise
-    var deathLimit = 3;
-    var birthLimit = 4;
 
     var oldGrid = this.grid.clone();
 
@@ -50,17 +43,16 @@ CAVE.Generator.prototype.step = function(acc) {
 
             // TODO Add overpopulation limit?
             if (alive) {
-                if (aliveNeighbours < deathLimit) {
+                if (aliveNeighbours < this.deathThreshold) {
                     this.grid.fillCell(p);
                 }
             } else {
-                if (aliveNeighbours > birthLimit) {
+                if (aliveNeighbours > this.birthThreshold) {
                     this.grid.clearCell(p);
                 }
             }
         }
     }
 
-    // TODO Parameterise
-    return (this.iterations++ < 10);
+    return (++this.iterations < this.maxIterations);
 };
