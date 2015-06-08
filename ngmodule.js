@@ -1,6 +1,18 @@
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
-        $scope.params = {type: 'Dungeon', walls: true, width: 5, height: 5, size: 50, deadEnds: 50, speed : 50, birthThreshold: 3, deathThreshold: 4, iterations : 5};
+        $scope.params = {
+            type: 'Dungeon',
+            walls: true,
+            width: 50,
+            height: 50,
+            size: 15,
+            roomLimit : 15,
+            maxRoomDimension: 10,
+            deadEnds: 50,
+            speed : 50,
+            birthThreshold: 3,
+            deathThreshold: 4,
+            iterations : 5};
 
         $scope.gridCanvas = new CANVAS.GridCanvas(document.getElementById("map"));
 
@@ -37,12 +49,21 @@ angular.module('generateApp', [])
             var builders;
 
             if ($scope.params.type == 'Dungeon') {
-                $scope.grid = $scope.params.walls ? new GRID.WalledGrid($scope.params.width, $scope.params.height) :
-                    new GRID.BlockGrid($scope.params.width, $scope.params.height);
-                builders = [
-                    new MAZE.Generator($scope.grid),
-                    new FILLER.DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
-                ];
+
+                if ($scope.params.walls) {
+                    $scope.grid = new GRID.WalledGrid($scope.params.width, $scope.params.height);
+                    builders = [
+                        new MAZE.Generator($scope.grid),
+                        new FILLER.DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
+                    ];
+                } else {
+                    $scope.grid = new GRID.BlockGrid($scope.params.width, $scope.params.height);
+                    builders = [
+                        new ROOM.Placer($scope.grid, $scope.params.roomLimit, $scope.params.maxRoomDimension),
+                        new MAZE.Generator($scope.grid),
+                        new FILLER.DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
+                    ];
+                }
             } else {
                 $scope.grid = new GRID.BlockGrid($scope.params.width, $scope.params.height);
                 builders = [

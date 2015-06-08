@@ -76,8 +76,8 @@ FILLER.ValidBlockCellSelector.prototype.findValidPosition = function(fromPoint) 
 };
 
 FILLER.DeadEndFiller = function(grid, deadEndPercentage) {
-
     this.grid = grid;
+    // TODO Allow percentage to be % of cells vs % of corridors
     this.deadEndPercentage = deadEndPercentage;
 
     this.cellSelector = (this.grid instanceof GRID.WalledGrid) ? new FILLER.ValidWalledCellSelector(this.grid) : new FILLER.ValidBlockCellSelector(this.grid);
@@ -132,5 +132,4 @@ FILLER.DeadEndFiller.prototype.pickDeadEnd = function() {
 FILLER.DeadEndFiller.prototype.fillCell = function(position) {
     console.log("Filling (" + position.x + "," + position.y + ")");
     this.grid.fillCell(position);
-
 };

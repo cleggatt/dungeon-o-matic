@@ -114,6 +114,13 @@ GRID.BlockGrid.prototype.getAllNeighbours = function(point) {
 GRID.BlockGrid.prototype.clearCell = function(location) {
     this.cells[location.x][location.y].clear = true;
 };
+GRID.BlockGrid.prototype.clearCells = function(location, width, height) {
+    for (var i = 0; i < width; i++) {
+        for (var j = 0; j < height; j++) {
+            this.cells[location.x + i][location.y + j].clear = true;
+        }
+    }
+};
 GRID.BlockGrid.prototype.clearPath = function(from, to) {
     // TODO Check that cells are adjacent
     var fromCell = this.cells[from.x][from.y];

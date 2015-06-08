@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
     <script src="grid.js"></script>
+    <script src="room.js"></script>
     <script src="maze.js"></script>
     <script src="cave.js"></script>
     <script src="filler.js"></script>
@@ -25,7 +26,7 @@
                     <div class="form-group form-group-sm">
                         <label for="paramsType" class="col-sm-6 control-label">Map type:</label>
                         <div class="col-sm-6">
-                            <select name="paramsType" ng-model="params.type" required class="form-control" id="paramsType">
+                            <select name="paramsType" ng-model="params.type" class="form-control" id="paramsType">
                                 <option>Dungeon</option>
                                 <option>Cave</option>
                             </select>
@@ -34,20 +35,20 @@
                     <div class="form-group form-group-sm">
                         <label for="paramsWidth" class="col-sm-6 control-label">Width</label>
                         <div class="col-sm-6">
-                            <input type="number" name="paramsWidth" ng-model="params.width" required class="form-control" id="paramsWidth">
+                            <input type="number" name="paramsWidth" ng-model="params.width" class="form-control" id="paramsWidth">
                         </div>
                     </div>
                     <div class="form-group form-group-sm">
                         <label for="paramsHeight" class="col-sm-6 control-label">Height</label>
                         <div class="col-sm-6">
-                            <input type="number" name="paramsHeight" ng-model="params.height" required class="form-control" id="paramsHeight">
+                            <input type="number" name="paramsHeight" ng-model="params.height" class="form-control" id="paramsHeight">
                         </div>
                     </div>
                     <div ng-show="params.type =='Dungeon'" class="form-group form-group-sm">
                         <div class="col-sm-offset-6 col-sm-6">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" name="paramsWalls" ng-model="params.walls" required>Walls
+                                    <input type="checkbox" name="paramsWalls" ng-model="params.walls">Walls
                                 </label>
                             </div>
                         </div>
@@ -56,7 +57,22 @@
                         <label for="paramsSize" class="col-sm-6 control-label">Cell size</label>
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input type="number" name="paramsSize" ng-model="params.size" required class="form-control" id="paramsSize">
+                                <input type="number" name="paramsSize" ng-model="params.size" class="form-control" id="paramsSize">
+                                <div class="input-group-addon"><small>px</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="params.type =='Dungeon' && !params.walls" class="form-group form-group-sm">
+                        <label for="paramsRoomLimit" class="col-sm-6 control-label">Max num rooms</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="paramsRoomLimit" ng-model="params.roomLimit" class="form-control" id="paramsRoomLimit">
+                        </div>
+                    </div>
+                    <div ng-show="params.type =='Dungeon' && !params.walls" class="form-group form-group-sm">
+                        <label for="paramsMaxRoomDimension" class="col-sm-6 control-label">Max room dimension</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" name="paramsMaxRoomDimension" ng-model="params.maxRoomDimension" class="form-control" id="paramsMaxRoomDimension">
                                 <div class="input-group-addon"><small>px</small></div>
                             </div>
                         </div>
@@ -65,7 +81,7 @@
                         <label for="paramsDeadEnds" class="col-sm-6 control-label">Remaining dead ends</label>
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input type="number" name="paramsDeadEnds" ng-model="params.deadEnds" required class="form-control" id="paramsDeadEnds">
+                                <input type="number" name="paramsDeadEnds" ng-model="params.deadEnds" class="form-control" id="paramsDeadEnds">
                                 <div class="input-group-addon"><small>%</small></div>
                             </div>
                         </div>
@@ -73,26 +89,26 @@
                     <div ng-show="params.type =='Cave'" class="form-group form-group-sm">
                         <label for="paramsBirthThreshold" class="col-sm-6 control-label">Birth threshold</label>
                         <div class="col-sm-6">
-                            <input type="number" name="paramsBirthThreshold" ng-model="params.birthThreshold" required class="form-control" id="paramsBirthThreshold">
+                            <input type="number" name="paramsBirthThreshold" ng-model="params.birthThreshold" class="form-control" id="paramsBirthThreshold">
                         </div>
                     </div>
                     <div ng-show="params.type =='Cave'" class="form-group form-group-sm">
                         <label for="paramsDeathThreshold" class="col-sm-6 control-label">Death threshold</label>
                         <div class="col-sm-6">
-                            <input type="number" name="paramsDeathThreshold" ng-model="params.deathThreshold" required class="form-control" id="paramsDeathThreshold">
+                            <input type="number" name="paramsDeathThreshold" ng-model="params.deathThreshold" class="form-control" id="paramsDeathThreshold">
                         </div>
                     </div>
                     <div ng-show="params.type =='Cave'" class="form-group form-group-sm">
                         <label for="paramsIterations" class="col-sm-6 control-label">Iterations</label>
                         <div class="col-sm-6">
-                            <input type="number" name="paramsIterations" ng-model="params.iterations" required class="form-control" id="paramsIterations">
+                            <input type="number" name="paramsIterations" ng-model="params.iterations" class="form-control" id="paramsIterations">
                         </div>
                     </div>
                     <div class="form-group form-group-sm">
                         <label for="paramsSpeed" class="col-sm-6 control-label">Animation speed</label>
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input type="number" name="paramsSpeed" ng-model="params.speed" required class="form-control" id="paramsSpeed">
+                                <input type="number" name="paramsSpeed" ng-model="params.speed" class="form-control" id="paramsSpeed">
                                 <div class="input-group-addon"><small>ms</small></div>
                             </div>
                         </div>

@@ -102,7 +102,7 @@ MAZE.Generator.prototype.init = function(acc) {
     acc.history = [];
     acc.deadEnds = [];
 
-    // TODO Check we are not skipping an animation frame.
+    // TODO Make sure the cell is a valid cell for blocks
     var x = Math.floor(Math.random() * this.grid.width);
     var y = Math.floor(Math.random() * this.grid.height);
     this.location = new GRID.Point(x, y);
