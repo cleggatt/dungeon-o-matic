@@ -61,6 +61,7 @@ angular.module('generateApp', [])
                     builders = [
                         new ROOM.Placer($scope.grid, $scope.params.roomLimit, $scope.params.maxRoomDimension),
                         new MAZE.Generator($scope.grid),
+                        new DOOR.Placer($scope.grid),
                         new FILLER.DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
                     ];
                 }
