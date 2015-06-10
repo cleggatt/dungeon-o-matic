@@ -40,8 +40,9 @@ ROOM.Placer.prototype.step = function(acc) {
     var room = new GRID.Rect(location, width, height);
     console.log("Trying to place room " + room);
 
+    // TODO The number of attempts should increase with the delay in animation
     // We give up after 100 attempts so we don't spend to long here
-    for (var attempts = 0; attempts < 100; attempts++) {
+    for (var attempts = 0; attempts < 500; attempts++) {
         if (this.placeRoom(acc)) {
             break;
         }
@@ -69,11 +70,11 @@ ROOM.Placer.prototype.placeRoom = function(acc) {
     // Rooms cannot be over, or flush with,the grid edge
     if (location.x + width >= this.grid.width) {
         console.log("Cannot place room: too wide");
-        return true;
+        return false;
     }
     if (location.y + height >= this.grid.height) {
         console.log("Cannot place room: too high");
-        return true;
+        return false;
     }
 
     var room = new GRID.Rect(location, width, height);
