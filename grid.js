@@ -30,6 +30,35 @@ GRID.Point.prototype.toString = function() {
     return '(' + this.x + ', ' + this.y + ')';
 };
 
+GRID.Rect = function(point, width, height) {
+    this.location = point;
+    this.width = width;
+    this.height = height;
+};
+GRID.Rect.prototype.intersection = function(rect, border, gap) {
+
+    var x1 = this.location.x - border;
+    var x2 = this.location.x + this.width + border;
+    var y1 = this.location.y - border;
+    var y2 = this.location.y + this.height + border;
+
+    var x3 = rect.location.x - border;
+    var x4 = rect.location.x + rect.width + border;
+    var y3 = rect.location.y - border;
+    var y4 = rect.location.y + rect.height + border;
+
+    var x5 = Math.max(x1, x3);
+    var y5 = Math.max(y1, y3);
+    var x6 = Math.min(x2, x4);
+    var y6 = Math.min(y2, y4);
+
+    // Make sure we have a gap of at least 'gap' pixels or we'll still count it as an intersection
+    return !((x5 - x6) >= gap || ((y5 - y6) >= gap));
+};
+GRID.Rect.prototype.toString = function() {
+    return this.width + 'x' + this.height + ' at ' +  this.location;
+};
+
 GRID.BlockCell = function(point) {
     this.location = point;
     this.clear = false;
@@ -114,6 +143,7 @@ GRID.BlockGrid.prototype.getAllNeighbours = function(point) {
 GRID.BlockGrid.prototype.clearCell = function(location) {
     this.cells[location.x][location.y].clear = true;
 };
+// TODO Change to take Rect
 GRID.BlockGrid.prototype.clearCells = function(location, width, height) {
     for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
