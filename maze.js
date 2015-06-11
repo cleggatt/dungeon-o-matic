@@ -103,6 +103,7 @@ MAZE.Generator.prototype.init = function(acc) {
     acc.deadEnds = [];
 
     // TODO Make sure the cell is a valid cell for blocks e.g not empty and clear on all sides
+    // Alternatively, start in a valid door position
     var x = Math.floor(Math.random() * this.grid.width);
     var y = Math.floor(Math.random() * this.grid.height);
     this.location = new GRID.Point(x, y);

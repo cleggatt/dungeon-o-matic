@@ -11,39 +11,35 @@ ROOM.Placer = function(grid, roomLimit, maxRoomDimension) {
     this.failures = 0;
 };
 ROOM.Placer.prototype.init = function(acc) {
+
     acc.rooms = [];
+
+    this.potentialRooms = [];
+    for (var x = 0; x < this.limit; x++) {
+        // Minimum room size is 2x2
+        var width = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
+        var height = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
+
+        var room = new GRID.Rect(undefined, width, height);
+        this.potentialRooms.push(room);
+    }
+
+    this.potentialRooms.sort(function compare(a, b) {
+        return b.area - a.area;
+    });
+
+    console.log("Potentials rooms: " + GRID.toString(this.potentialRooms));
+
     return true;
 };
 ROOM.Placer.prototype.step = function(acc) {
 
-    // Rooms cannot be flush with,the grid edge
-    var x = Math.floor(Math.random() * (this.grid.width - 1)) + 1;
-    var y =Math.floor(Math.random() * (this.grid.height - 1)) + 1;
-    var location = new GRID.Point(x, y);
-
-    // Minimum room size is 2x2
-    var width = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
-    var height = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
-
-    console.log('Placing ' + width + 'x' + height + ' room at ' + location);
-
-    // Rooms cannot be over, or flush with,the grid edge
-    if (location.x + width >= this.grid.width) {
-        console.log("Cannot place room: too wide");
-        return true;
-    }
-    if (location.y + height >= this.grid.height) {
-        console.log("Cannot place room: too high");
-        return true;
-    }
-
-    var room = new GRID.Rect(location, width, height);
+    var room = this.potentialRooms.shift();
     console.log("Trying to place room " + room);
-
-    // TODO The number of attempts should increase with the delay in animation
-    // We give up after 100 attempts so we don't spend to long here
+    // TODO The number of attempts should increase with the delay in animation, in which case we need to remember room
+    // We give up after 500 attempts so we don't spend to long here
     for (var attempts = 0; attempts < 500; attempts++) {
-        if (this.placeRoom(acc)) {
+        if (this.placeRoom(room, acc)) {
             break;
         }
         this.failures++;
@@ -51,44 +47,40 @@ ROOM.Placer.prototype.step = function(acc) {
 
     console.log("Placed " + this.count + "/" + this.limit + ", failed " + this.failures + "/" + (this.count * this.failureRatio))
 
-    return ((this.count < this.limit) && (this.failures <= (this.count * this.failureRatio)));
+    return ((this.potentialRooms.length > 0) && (this.failures <= (this.count * this.failureRatio)));
 };
 
-ROOM.Placer.prototype.placeRoom = function(acc) {
+ROOM.Placer.prototype.placeRoom = function(room, acc) {
 
     // Rooms cannot be flush with,the grid edge
     var x = Math.floor(Math.random() * (this.grid.width - 1)) + 1;
     var y = Math.floor(Math.random() * (this.grid.height - 1)) + 1;
     var location = new GRID.Point(x, y);
 
-    // Minimum room size is 2x2
-    var width = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
-    var height = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
-
-    console.log('Attempting to place ' + width + 'x' + height + ' room at ' + location);
+    console.log('Attempting to place ' + room + ' at ' + location);
 
     // Rooms cannot be over, or flush with,the grid edge
-    if (location.x + width >= this.grid.width) {
+    if (location.x + room.width >= this.grid.width) {
         console.log("Cannot place room: too wide");
         return false;
     }
-    if (location.y + height >= this.grid.height) {
+    if (location.y + room.height >= this.grid.height) {
         console.log("Cannot place room: too high");
         return false;
     }
 
-    var room = new GRID.Rect(location, width, height);
+    // TODO Resestting the location is a bit dodgy
+    room.location = location;
     for (var idx = 0; idx < acc.rooms.length; idx++) {
         var existingRoom = acc.rooms[idx];
         // TODO Allow a certain % of overlap to permit odd room shapes
         if (existingRoom.intersection(room, 1, 1)) {
             console.log("Failed to place room due to overlap with " + existingRoom + "!");
-            this.failures++;
             return false;
         }
     }
 
-    this.grid.clearCells(location, width, height);
+    this.grid.clearCells(location, room.width, room.height);
     this.count++;
     acc.rooms.push(room);
 

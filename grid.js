@@ -34,6 +34,7 @@ GRID.Rect = function(point, width, height) {
     this.location = point;
     this.width = width;
     this.height = height;
+    this.area = this.width * this.height;
 };
 GRID.Rect.prototype.intersection = function(rect, border, gap) {
 
