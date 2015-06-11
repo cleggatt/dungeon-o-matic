@@ -24,6 +24,9 @@ CANVAS.GridCanvas.prototype.setGrid = function(grid) {
 CANVAS.GridCanvas.prototype.setAcc = function(acc) {
     this.acc = acc;
 };
+CANVAS.GridCanvas.prototype.convertPoint = function(x, y) {
+    return new GRID.Point(Math.floor(x / this.cellSize), Math.floor(y / this.cellSize));
+};
 CANVAS.GridCanvas.prototype.render = function() {
     // TODO Check for grid and acc
     console.log("GridCanvas.render()");

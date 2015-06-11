@@ -106,4 +106,22 @@ angular.module('generateApp', [])
                 $interval.cancel(animatorPromise);
             }
         });
+
+        var getPosition = function(event) {
+            var x = event.offsetX;
+            var y = event.offsetY;
+
+            var point = $scope.gridCanvas.convertPoint(x, y);
+            var cell = $scope.grid.getCell(point);
+            if (cell) {
+                console.log("Toggling cell " + cell);
+                if (cell.clear) {
+                    $scope.grid.fillCell(point);
+                } else {
+                    $scope.grid.clearCell(point);
+                }
+                $scope.gridCanvas.render();
+            }
+        };
+        $scope.gridCanvas.canvas.addEventListener("mousedown", getPosition, false);
     }]);
