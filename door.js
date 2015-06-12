@@ -24,7 +24,6 @@ DOOR.Placer.prototype.step = function(acc) {
         cell = this.grid.getCell(new GRID.Point(x, room.location.y - 2));
         if (cell && cell.clear) {
             possibleDoors.push(new GRID.Point(x, room.location.y - 1));
-            break;
         }
     }
     // Bottom
@@ -32,7 +31,6 @@ DOOR.Placer.prototype.step = function(acc) {
         cell = this.grid.getCell(new GRID.Point(x, y2 + 2));
         if (cell && cell.clear) {
             possibleDoors.push(new GRID.Point(x, y2 + 1));
-            break;
         }
     }
     // Left
@@ -40,7 +38,6 @@ DOOR.Placer.prototype.step = function(acc) {
         cell = this.grid.getCell(new GRID.Point(room.location.x - 2, y));
         if (cell && cell.clear) {
             possibleDoors.push(new GRID.Point(room.location.x - 1, y));
-            break;
         }
     }
     // Right
@@ -48,7 +45,6 @@ DOOR.Placer.prototype.step = function(acc) {
         cell = this.grid.getCell(new GRID.Point(x2 + 2, y));
         if (cell && cell.clear) {
             possibleDoors.push(new GRID.Point(x2 + 1, y));
-            break;
         }
     }
 
