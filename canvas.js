@@ -41,7 +41,8 @@ CANVAS.GridCanvas.prototype.render = function() {
 
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // TODO Draw border
+    // Draw border
+    ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw filled cells
     ctx.fillStyle = '#000000';
