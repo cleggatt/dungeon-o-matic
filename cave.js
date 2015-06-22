@@ -1,6 +1,6 @@
-var CAVE = CAVE || {};
+var GRID = require("./grid.js");
 
-CAVE.Generator = function(grid, iterations, birthThreshold, deathThreshold) {
+module.exports.Generator = function(grid, iterations, birthThreshold, deathThreshold) {
     // TODO Must be a BlockGrid
     this.grid = grid;
     this.birthThreshold = birthThreshold;
@@ -8,7 +8,7 @@ CAVE.Generator = function(grid, iterations, birthThreshold, deathThreshold) {
     this.maxIterations = iterations;
     this.iterations = 0;
 };
-CAVE.Generator.prototype.init = function(acc) {
+module.exports.Generator.prototype.init = function(acc) {
 
     for (var x = 0; x < this.grid.cells.length; x++) {
         for (var y = 0; y < this.grid.cells[x].length; y++) {
@@ -20,7 +20,7 @@ CAVE.Generator.prototype.init = function(acc) {
 
     return true;
 };
-CAVE.Generator.prototype.step = function(acc) {
+module.exports.Generator.prototype.step = function(acc) {
 
     var oldGrid = this.grid.clone();
 

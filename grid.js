@@ -1,7 +1,5 @@
-// TODO Check what can be module-private
-var GRID = GRID || {};
-
-GRID.toString = function(o) {
+// TODO Rename
+module.exports.toString = function(o) {
     if (o instanceof Array) {
         var buff = "";
         for (var idx = 0; idx < o.length; idx++) {
@@ -19,24 +17,24 @@ GRID.toString = function(o) {
     }
 };
 
-GRID.Point = function(x, y) {
+module.exports.Point = function(x, y) {
     this.x = x;
     this.y = y;
 };
-GRID.Point.prototype.equals = function(otherPoint) {
+module.exports.Point.prototype.equals = function(otherPoint) {
     return this.x == otherPoint.x && this.y == otherPoint.y;
 };
-GRID.Point.prototype.toString = function() {
+module.exports.Point.prototype.toString = function() {
     return '(' + this.x + ', ' + this.y + ')';
 };
 
-GRID.Rect = function(point, width, height) {
+module.exports.Rect = function(point, width, height) {
     this.location = point;
     this.width = width;
     this.height = height;
     this.area = this.width * this.height;
 };
-GRID.Rect.prototype.intersection = function(rect, border, gap) {
+module.exports.Rect.prototype.intersection = function(rect, border, gap) {
 
     var x1 = this.location.x - border;
     var x2 = this.location.x + this.width + border;
@@ -56,35 +54,35 @@ GRID.Rect.prototype.intersection = function(rect, border, gap) {
     // Make sure we have a gap of at least 'gap' pixels or we'll still count it as an intersection
     return !((x5 - x6) >= gap || ((y5 - y6) >= gap));
 };
-GRID.Rect.prototype.toString = function() {
+module.exports.Rect.prototype.toString = function() {
     return this.width + 'x' + this.height + ' at ' +  this.location;
 };
 
-GRID.BlockCell = function(point) {
+module.exports.BlockCell = function(point) {
     this.location = point;
     this.clear = false;
 };
-GRID.BlockCell.prototype.toString = function() {
+module.exports.BlockCell.prototype.toString = function() {
     return this.location + ' [' + (this.clear ? 'clear' : 'full') + ']';
 };
 
-GRID.WalledCell = function(point) {
+module.exports.WalledCell = function(point) {
     this.location = point;
     this.clear = false;
     this.walls = [true, true, true, true];
 };
 // TODO Should this also set clear=false? If so, add a reset to BlockCell
-GRID.WalledCell.prototype.reset = function() {
+module.exports.WalledCell.prototype.reset = function() {
     this.walls[0] = true;
     this.walls[1] = true;
     this.walls[2] = true;
     this.walls[3] = true;
 };
-GRID.WalledCell.prototype.toString = function() {
+module.exports.WalledCell.prototype.toString = function() {
     return this.location + ' [' + (this.clear ? 'clear' : 'full') + ']';
 };
 
-GRID.BlockGrid = function(width, height) {
+module.exports.BlockGrid = function(width, height) {
     this.width = width;
     this.height = height;
 
@@ -92,13 +90,13 @@ GRID.BlockGrid = function(width, height) {
     for (var x = 0; x < this.cells.length; x++) {
         this.cells[x] = new Array(height);
         for (var y = 0; y < this.cells[x].length; y++) {
-            this.cells[x][y] = new GRID.BlockCell(new GRID.Point(x, y));
+            this.cells[x][y] = new module.exports.BlockCell(new module.exports.Point(x, y));
         }
     }
 };
-GRID.BlockGrid.prototype.clone = function() {
+module.exports.BlockGrid.prototype.clone = function() {
     // TODO This could be more efficient and just initialise the cells on creation
-    var clone = new GRID.BlockGrid(this.width, this.height);
+    var clone = new module.exports.BlockGrid(this.width, this.height);
     for (var x = 0; x < this.cells.length; x++) {
         for (var y = 0; y < this.cells[x].length; y++) {
             clone.cells[x][y].clear = this.cells[x][y].clear;
@@ -106,53 +104,53 @@ GRID.BlockGrid.prototype.clone = function() {
     }
     return clone;
 };
-GRID.BlockGrid.prototype.getCell = function(point) {
+module.exports.BlockGrid.prototype.getCell = function(point) {
     if (point.x < 0 || point.x >= this.width || point.y < 0 || point.y >= this.height) {
         return null;
     }
 
     return this.cells[point.x][point.y];
 };
-GRID.BlockGrid.prototype.getAdjacentNeighbours = function(point) {
+module.exports.BlockGrid.prototype.getAdjacentNeighbours = function(point) {
     var neighbours = [ null, null, null, null, null, null, null, null];
 
-    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
-    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
-    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
-    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
+    neighbours[1] = this.getCell(new module.exports.Point(point.x, point.y - 1));
+    neighbours[3] = this.getCell(new module.exports.Point(point.x + 1, point.y));
+    neighbours[5] = this.getCell(new module.exports.Point(point.x, point.y + 1));
+    neighbours[7] = this.getCell(new module.exports.Point(point.x - 1, point.y));
 
     return neighbours;
 };
-GRID.BlockGrid.prototype.getAllNeighbours = function(point) {
+module.exports.BlockGrid.prototype.getAllNeighbours = function(point) {
 
     var neighbours = [ null, null, null, null, null, null, null, null];
 
-    neighbours[0] = this.getCell(new GRID.Point(point.x - 1, point.y - 1));
-    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
-    neighbours[2] = this.getCell(new GRID.Point(point.x + 1, point.y - 1));
+    neighbours[0] = this.getCell(new module.exports.Point(point.x - 1, point.y - 1));
+    neighbours[1] = this.getCell(new module.exports.Point(point.x, point.y - 1));
+    neighbours[2] = this.getCell(new module.exports.Point(point.x + 1, point.y - 1));
 
-    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
+    neighbours[3] = this.getCell(new module.exports.Point(point.x + 1, point.y));
 
-    neighbours[4] = this.getCell(new GRID.Point(point.x + 1, point.y + 1));
-    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
-    neighbours[6] = this.getCell(new GRID.Point(point.x - 1, point.y + 1));
+    neighbours[4] = this.getCell(new module.exports.Point(point.x + 1, point.y + 1));
+    neighbours[5] = this.getCell(new module.exports.Point(point.x, point.y + 1));
+    neighbours[6] = this.getCell(new module.exports.Point(point.x - 1, point.y + 1));
 
-    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
+    neighbours[7] = this.getCell(new module.exports.Point(point.x - 1, point.y));
 
     return neighbours;
 };
-GRID.BlockGrid.prototype.clearCell = function(location) {
+module.exports.BlockGrid.prototype.clearCell = function(location) {
     this.cells[location.x][location.y].clear = true;
 };
 // TODO Change to take Rect
-GRID.BlockGrid.prototype.clearCells = function(location, width, height) {
+module.exports.BlockGrid.prototype.clearCells = function(location, width, height) {
     for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
             this.cells[location.x + i][location.y + j].clear = true;
         }
     }
 };
-GRID.BlockGrid.prototype.clearPath = function(from, to) {
+module.exports.BlockGrid.prototype.clearPath = function(from, to) {
     // TODO Check that cells are adjacent
     var fromCell = this.cells[from.x][from.y];
     var toCell = this.cells[to.x][to.y];
@@ -160,13 +158,13 @@ GRID.BlockGrid.prototype.clearPath = function(from, to) {
     fromCell.clear = true;
     toCell.clear = true;
 };
-GRID.BlockGrid.prototype.fillCell = function(point) {
+module.exports.BlockGrid.prototype.fillCell = function(point) {
     var cell = this.cells[point.x][point.y];
     cell.clear = false;
 };
 
 
-GRID.WalledGrid = function(width, height) {
+module.exports.WalledGrid = function(width, height) {
 
     this.width = width;
     this.height = height;
@@ -175,50 +173,50 @@ GRID.WalledGrid = function(width, height) {
     for (var x = 0; x < this.cells.length; x++) {
         this.cells[x] = new Array(height);
         for (var y = 0; y < this.cells[x].length; y++) {
-            this.cells[x][y] = new GRID.WalledCell(new GRID.Point(x, y));
+            this.cells[x][y] = new module.exports.WalledCell(new module.exports.Point(x, y));
         }
     }
 };
-GRID.WalledGrid.prototype.getCell = function(point) {
+module.exports.WalledGrid.prototype.getCell = function(point) {
     if (point.x < 0 || point.x >= this.width || point.y < 0 || point.y >= this.height) {
         return null;
     }
 
     return this.cells[point.x][point.y];
 };
-GRID.WalledGrid.prototype.getAdjacentNeighbours = function(point) {
+module.exports.WalledGrid.prototype.getAdjacentNeighbours = function(point) {
     var neighbours = [ null, null, null, null, null, null, null, null];
 
-    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
-    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
-    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
-    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
+    neighbours[1] = this.getCell(new module.exports.Point(point.x, point.y - 1));
+    neighbours[3] = this.getCell(new module.exports.Point(point.x + 1, point.y));
+    neighbours[5] = this.getCell(new module.exports.Point(point.x, point.y + 1));
+    neighbours[7] = this.getCell(new module.exports.Point(point.x - 1, point.y));
 
     return neighbours;
 };
-GRID.WalledGrid.prototype.getAllNeighbours = function(point) {
+module.exports.WalledGrid.prototype.getAllNeighbours = function(point) {
 
     var neighbours = [ null, null, null, null, null, null, null, null];
 
-    neighbours[0] = this.getCell(new GRID.Point(point.x - 1, point.y - 1));
-    neighbours[1] = this.getCell(new GRID.Point(point.x, point.y - 1));
-    neighbours[2] = this.getCell(new GRID.Point(point.x + 1, point.y - 1));
+    neighbours[0] = this.getCell(new module.exports.Point(point.x - 1, point.y - 1));
+    neighbours[1] = this.getCell(new module.exports.Point(point.x, point.y - 1));
+    neighbours[2] = this.getCell(new module.exports.Point(point.x + 1, point.y - 1));
 
-    neighbours[3] = this.getCell(new GRID.Point(point.x + 1, point.y));
+    neighbours[3] = this.getCell(new module.exports.Point(point.x + 1, point.y));
 
-    neighbours[4] = this.getCell(new GRID.Point(point.x + 1, point.y + 1));
-    neighbours[5] = this.getCell(new GRID.Point(point.x, point.y + 1));
-    neighbours[6] = this.getCell(new GRID.Point(point.x - 1, point.y + 1));
+    neighbours[4] = this.getCell(new module.exports.Point(point.x + 1, point.y + 1));
+    neighbours[5] = this.getCell(new module.exports.Point(point.x, point.y + 1));
+    neighbours[6] = this.getCell(new module.exports.Point(point.x - 1, point.y + 1));
 
-    neighbours[7] = this.getCell(new GRID.Point(point.x - 1, point.y));
+    neighbours[7] = this.getCell(new module.exports.Point(point.x - 1, point.y));
 
     return neighbours;
 };
-GRID.WalledGrid.prototype.clearCell = function(point) {
+module.exports.WalledGrid.prototype.clearCell = function(point) {
     this.cells[point.x][point.y].clear = true;
 };
 // TODO Pass cell or points?
-GRID.WalledGrid.prototype.clearPath = function(from, to) {
+module.exports.WalledGrid.prototype.clearPath = function(from, to) {
 
     var fromCell = this.cells[from.x][from.y];
     var toCell = this.cells[to.x][to.y];
@@ -241,7 +239,7 @@ GRID.WalledGrid.prototype.clearPath = function(from, to) {
     fromCell.walls[direction] = false;
     toCell.walls[this.reverseDirection(direction)] = false;
 };
-GRID.WalledGrid.prototype.fillCell = function(point) {
+module.exports.WalledGrid.prototype.fillCell = function(point) {
 
     var cell = this.cells[point.x][point.y];
 
@@ -263,6 +261,6 @@ GRID.WalledGrid.prototype.fillCell = function(point) {
     cell.clear = false;
     cell.reset();
 };
-GRID.WalledGrid.prototype.reverseDirection = function(direction) {
+module.exports.WalledGrid.prototype.reverseDirection = function(direction) {
     return (direction + 2) % 4;
 };

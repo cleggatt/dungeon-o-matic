@@ -1,3 +1,12 @@
+var CANVAS = require("./canvas.js");
+var CAVE = require("./cave.js");
+var DOOR = require("./door.js");
+var FILLER = require("./filler.js");
+var GRID = require("./grid.js");
+var MAP = require("./generator.js");
+var MAZE = require("./maze.js");
+var ROOM = require("./room.js");
+
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
         $scope.params = {

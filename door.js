@@ -1,13 +1,13 @@
-var DOOR = DOOR || {};
+var GRID = require("./grid.js");
 
-DOOR.Placer = function(grid) {
+exports.Placer = function(grid) {
     this.grid = grid;
 };
-DOOR.Placer.prototype.init = function(acc) {
+exports.Placer.prototype.init = function(acc) {
     this.roomIdx = 0;
     return true;
 };
-DOOR.Placer.prototype.step = function(acc) {
+exports.Placer.prototype.step = function(acc) {
 
     var room = acc.rooms[this.roomIdx];
     console.log("Creating door for room #" + this.roomIdx + ": " + room);

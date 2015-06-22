@@ -1,13 +1,11 @@
-var MAP = MAP || {};
-
-MAP.Generator = function(builders) {
+module.exports.Generator = function(builders) {
 
     this.acc = {};
 
     this.allBuilders = builders.slice(0);
     this.currentBuilder = null;
 };
-MAP.Generator.prototype.step = function() {
+module.exports.Generator.prototype.step = function() {
 
     if (this.currentBuilder == null) {
         if (this.allBuilders.length == 0) {

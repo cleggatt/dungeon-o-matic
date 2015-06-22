@@ -1,10 +1,10 @@
 // TODO Check what can be module-private
-var FILLER = FILLER || {};
+var GRID = require("./grid.js");
 
-FILLER.ValidWalledCellSelector = function(grid) {
+module.exports.ValidWalledCellSelector = function(grid) {
     this.grid = grid;
 };
-FILLER.ValidWalledCellSelector.prototype.findValidPosition = function(fromPoint) {
+module.exports.ValidWalledCellSelector.prototype.findValidPosition = function(fromPoint) {
 
     console.log('Finding valid position from ' + fromPoint + '...');
 
@@ -30,7 +30,7 @@ FILLER.ValidWalledCellSelector.prototype.findValidPosition = function(fromPoint)
         return null;
     }
 };
-FILLER.ValidWalledCellSelector.prototype.findSingleExit = function(walls) {
+module.exports.ValidWalledCellSelector.prototype.findSingleExit = function(walls) {
 
     var lastExit = -1;
     for (var direction = 0; direction < 4; direction++) {
@@ -52,10 +52,10 @@ FILLER.ValidWalledCellSelector.prototype.findSingleExit = function(walls) {
     return lastExit;
 };
 
-FILLER.ValidBlockCellSelector = function(grid) {
+module.exports.ValidBlockCellSelector = function(grid) {
     this.grid = grid;
 };
-FILLER.ValidBlockCellSelector.prototype.findValidPosition = function(fromPoint) {
+module.exports.ValidBlockCellSelector.prototype.findValidPosition = function(fromPoint) {
     var neighbours = this.grid.getAdjacentNeighbours(fromPoint);
     console.log("Finding valid position from: " + neighbours + "...");
 
@@ -75,14 +75,14 @@ FILLER.ValidBlockCellSelector.prototype.findValidPosition = function(fromPoint) 
     return lastExit ? lastExit.location : null;
 };
 
-FILLER.DeadEndFiller = function(grid, deadEndPercentage) {
+module.exports.DeadEndFiller = function(grid, deadEndPercentage) {
     this.grid = grid;
     // TODO Allow percentage to be % of cells vs % of corridors
     this.deadEndPercentage = deadEndPercentage;
 
-    this.cellSelector = (this.grid instanceof GRID.WalledGrid) ? new FILLER.ValidWalledCellSelector(this.grid) : new FILLER.ValidBlockCellSelector(this.grid);
+    this.cellSelector = (this.grid instanceof GRID.WalledGrid) ? new module.exports.ValidWalledCellSelector(this.grid) : new module.exports.ValidBlockCellSelector(this.grid);
 };
-FILLER.DeadEndFiller.prototype.init = function(acc) {
+module.exports.DeadEndFiller.prototype.init = function(acc) {
 
     this.deadEnds = acc.deadEnds.slice(0);
     this.deadEndsToKeep = Math.ceil(this.deadEnds.length * (this.deadEndPercentage / 100));
@@ -96,7 +96,7 @@ FILLER.DeadEndFiller.prototype.init = function(acc) {
 
     return (this.position != null);
 };
-FILLER.DeadEndFiller.prototype.step = function(acc) {
+module.exports.DeadEndFiller.prototype.step = function(acc) {
 
     var oldPosition = this.position;
 
@@ -115,7 +115,7 @@ FILLER.DeadEndFiller.prototype.step = function(acc) {
     acc.currentPoint = this.position;
     return (this.position != null);
 };
-FILLER.DeadEndFiller.prototype.pickDeadEnd = function() {
+module.exports.DeadEndFiller.prototype.pickDeadEnd = function() {
 
     console.log("Finding valid dead end while keeping " + this.deadEndsToKeep);
 
@@ -129,7 +129,7 @@ FILLER.DeadEndFiller.prototype.pickDeadEnd = function() {
     return deadEnd;
 };
 // TODO Replace with direct Grid call
-FILLER.DeadEndFiller.prototype.fillCell = function(position) {
+module.exports.DeadEndFiller.prototype.fillCell = function(position) {
     console.log("Filling (" + position.x + "," + position.y + ")");
     this.grid.fillCell(position);
 };

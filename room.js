@@ -1,6 +1,6 @@
-var ROOM = ROOM || {};
+var GRID = require("./grid.js");
 
-ROOM.Placer = function(grid, roomLimit, maxRoomDimension) {
+module.exports.Placer = function(grid, roomLimit, maxRoomDimension) {
     this.grid = grid;
     this.limit = roomLimit;
     // TODO Cannot be so big that we can't place 'count' rooms of average size on the grid
@@ -10,7 +10,7 @@ ROOM.Placer = function(grid, roomLimit, maxRoomDimension) {
     this.count = 0;
     this.failures = 0;
 };
-ROOM.Placer.prototype.init = function(acc) {
+module.exports.Placer.prototype.init = function(acc) {
 
     acc.rooms = [];
 
@@ -32,7 +32,7 @@ ROOM.Placer.prototype.init = function(acc) {
 
     return true;
 };
-ROOM.Placer.prototype.step = function(acc) {
+module.exports.Placer.prototype.step = function(acc) {
 
     var room = this.potentialRooms.shift();
     console.log("Trying to place room " + room);
@@ -50,7 +50,7 @@ ROOM.Placer.prototype.step = function(acc) {
     return ((this.potentialRooms.length > 0) && (this.failures <= (this.count * this.failureRatio)));
 };
 
-ROOM.Placer.prototype.placeRoom = function(room, acc) {
+module.exports.Placer.prototype.placeRoom = function(room, acc) {
 
     // Rooms cannot be flush with,the grid edge
     var x = Math.floor(Math.random() * (this.grid.width - 1)) + 1;
