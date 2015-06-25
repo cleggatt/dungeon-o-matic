@@ -1,0 +1,8 @@
+#!/bin/bash
+npm install
+if [ ./node_modules/gulp/bin/gulp.js ];
+then
+    ./node_modules/gulp/bin/gulp.js "$@"
+else
+   gulp "$@"
+fi
