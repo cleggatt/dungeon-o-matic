@@ -50,9 +50,12 @@ exports.Placer.prototype.step = function(acc) {
 
     console.log("Possible doors " + GRID.toString(possibleDoors));
 
-    var door = possibleDoors[Math.floor(Math.random() * possibleDoors.length)];
-    console.log("Creating door at " + door);
-    this.grid.clearCell(door);
+    // Sanity check
+    if (doors.length > 0) {
+        var door = possibleDoors[Math.floor(Math.random() * possibleDoors.length)];
+        console.log("Creating door at " + door);
+        this.grid.clearCell(door);
+    }
 
     this.roomIdx++;
     return this.roomIdx < acc.rooms.length;
