@@ -9,7 +9,10 @@
   "license": "MIT",
   "devDependencies": {
     "gulp": "~3.9.0",
+    "gulp-util": "~3.0.5",
+    "webpack": "~1.9.11",
     "gulp-jasmine": "~2.0.1",
-    "jasmine": "~2.3.1"
+    "jasmine": "~2.3.1",
+    "webpack-dev-server": "~1.9.0"
   }
 }
