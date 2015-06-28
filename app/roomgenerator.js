@@ -1,6 +1,8 @@
-var GRID = require("./grid.js");
+var Point = require("./point.js");
+var Rect = require("./rect.js");
+var Util = require("./util.js");
 
-module.exports.Placer = function(grid, roomLimit, maxRoomDimension) {
+var RoomGenerator = function RoomGenerator(grid, roomLimit, maxRoomDimension) {
     this.grid = grid;
     this.limit = roomLimit;
     // TODO Cannot be so big that we can't place 'count' rooms of average size on the grid
@@ -10,7 +12,7 @@ module.exports.Placer = function(grid, roomLimit, maxRoomDimension) {
     this.count = 0;
     this.failures = 0;
 };
-module.exports.Placer.prototype.init = function(acc) {
+RoomGenerator.prototype.init = function(acc) {
 
     acc.rooms = [];
 
@@ -20,7 +22,7 @@ module.exports.Placer.prototype.init = function(acc) {
         var width = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
         var height = Math.ceil(Math.random() * (this.maxRoomSize - 1)) + 1;
 
-        var room = new GRID.Rect(undefined, width, height);
+        var room = new Rect(undefined, width, height);
         this.potentialRooms.push(room);
     }
 
@@ -28,11 +30,11 @@ module.exports.Placer.prototype.init = function(acc) {
         return b.area - a.area;
     });
 
-    console.log("Potentials rooms: " + GRID.toString(this.potentialRooms));
+    console.log("Potentials rooms: " + Util.toString(this.potentialRooms));
 
     return true;
 };
-module.exports.Placer.prototype.step = function(acc) {
+RoomGenerator.prototype.step = function(acc) {
 
     var room = this.potentialRooms.shift();
     console.log("Trying to place room " + room);
@@ -49,13 +51,12 @@ module.exports.Placer.prototype.step = function(acc) {
 
     return ((this.potentialRooms.length > 0) && (this.failures <= (this.count * this.failureRatio)));
 };
-
-module.exports.Placer.prototype.placeRoom = function(room, acc) {
+RoomGenerator.prototype.placeRoom = function(room, acc) {
 
     // Rooms cannot be flush with,the grid edge
     var x = Math.floor(Math.random() * (this.grid.width - 1)) + 1;
     var y = Math.floor(Math.random() * (this.grid.height - 1)) + 1;
-    var location = new GRID.Point(x, y);
+    var location = new Point(x, y);
 
     console.log('Attempting to place ' + room + ' at ' + location);
 
@@ -69,7 +70,7 @@ module.exports.Placer.prototype.placeRoom = function(room, acc) {
         return false;
     }
 
-    // TODO Resestting the location is a bit dodgy
+    // TODO Resetting the location is a bit dodgy
     room.location = location;
     for (var idx = 0; idx < acc.rooms.length; idx++) {
         var existingRoom = acc.rooms[idx];
@@ -86,3 +87,5 @@ module.exports.Placer.prototype.placeRoom = function(room, acc) {
 
     return true;
 };
+
+module.exports = RoomGenerator;

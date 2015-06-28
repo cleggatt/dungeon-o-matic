@@ -1,35 +1,34 @@
-var GRID = require("./grid.js");
+var Point = require("./point.js");
+var WalledGrid = require("./walledgrid.js");
 
-module.exports.GridCanvas = function(canvas, acc) {
-
+var GridCanvas = function GridCanvas(canvas, acc) {
     this.canvas = canvas;
     this.acc = acc;
     this.cellSize = 50;
 };
-module.exports.GridCanvas.prototype.setCellSize = function(cellSize) {
+GridCanvas.prototype.setCellSize = function(cellSize) {
     this.cellSize = cellSize;
     if (this.grid) {
         this.canvas.width = this.grid.width * this.cellSize;
         this.canvas.height = this.grid.height * this.cellSize;
     }
 };
-module.exports.GridCanvas.prototype.setGrid = function(grid) {
+GridCanvas.prototype.setGrid = function(grid) {
     this.grid = grid;
     this.canvas.width = this.grid.width * this.cellSize;
     this.canvas.height = this.grid.height * this.cellSize;
 
-    this.drawWalls = (grid instanceof GRID.WalledGrid);
+    this.drawWalls = (grid instanceof WalledGrid);
 };
 // TODO Rename - Shall we call this "state data"?
-module.exports.GridCanvas.prototype.setAcc = function(acc) {
+GridCanvas.prototype.setAcc = function(acc) {
     this.acc = acc;
 };
-module.exports.GridCanvas.prototype.convertPoint = function(x, y) {
-    return new GRID.Point(Math.floor(x / this.cellSize), Math.floor(y / this.cellSize));
+GridCanvas.prototype.convertPoint = function(x, y) {
+    return new Point(Math.floor(x / this.cellSize), Math.floor(y / this.cellSize));
 };
-module.exports.GridCanvas.prototype.render = function() {
+GridCanvas.prototype.render = function() {
     // TODO Check for grid and acc
-    console.log("GridCanvas.render()");
 
     if (!this.canvas.getContext) {
         // TODO Handle this error
@@ -83,7 +82,7 @@ module.exports.GridCanvas.prototype.render = function() {
         ctx.stroke();
     }
 };
-module.exports.GridCanvas.prototype.drawCell = function(ctx, x, y, walls) {
+GridCanvas.prototype.drawCell = function(ctx, x, y, walls) {
     if (walls[0]) {
         ctx.moveTo(x, y);
         ctx.lineTo(x + this.cellSize, y);
@@ -101,3 +100,5 @@ module.exports.GridCanvas.prototype.drawCell = function(ctx, x, y, walls) {
         ctx.lineTo(x, y + this.cellSize);
     }
 };
+
+module.exports = GridCanvas;

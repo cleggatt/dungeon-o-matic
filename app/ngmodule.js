@@ -1,11 +1,12 @@
-var CANVAS = require("./canvas.js");
-var CAVE = require("./cave.js");
-var DOOR = require("./door.js");
-var FILLER = require("./filler.js");
-var GRID = require("./grid.js");
-var MAP = require("./generator.js");
-var MAZE = require("./maze.js");
-var ROOM = require("./room.js");
+var BlockGrid = require("./blockgrid.js");
+var CaveGenerator = require("./cavegenerator.js");
+var CompositeGenerator = require("./compositegenerator.js");
+var DoorGenerator = require("./doorgenerator.js");
+var FillGenerator = require("./fillgenerator.js");
+var GridCanvas = require("./gridcanvas.js");
+var MazeGenerator = require("./mazegenerator.js");
+var RoomGenerator = require("./roomgenerator.js");
+var WalledGrid = require("./walledgrid.js");
 
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
@@ -23,7 +24,7 @@ angular.module('generateApp', [])
             deathThreshold: 4,
             iterations : 5};
 
-        $scope.gridCanvas = new CANVAS.GridCanvas(document.getElementById("map"));
+        $scope.gridCanvas = new GridCanvas(document.getElementById("map"));
 
         $scope.generating = false;
         $scope.paused = false;
@@ -55,34 +56,34 @@ angular.module('generateApp', [])
             }
             $scope.generating = true;
 
-            var builders;
+            var generators;
 
             if ($scope.params.type == 'Dungeon') {
 
                 if ($scope.params.walls) {
-                    $scope.grid = new GRID.WalledGrid($scope.params.width, $scope.params.height);
-                    builders = [
-                        new MAZE.Generator($scope.grid),
-                        new FILLER.DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
+                    $scope.grid = new WalledGrid($scope.params.width, $scope.params.height);
+                    generators = [
+                        new MazeGenerator($scope.grid),
+                        new FillGenerator($scope.grid, parseInt($scope.params.deadEnds))
                     ];
                 } else {
-                    $scope.grid = new GRID.BlockGrid($scope.params.width, $scope.params.height);
-                    builders = [
-                        new ROOM.Placer($scope.grid, $scope.params.roomLimit, $scope.params.maxRoomDimension),
-                        new MAZE.Generator($scope.grid),
-                        new DOOR.Placer($scope.grid),
-                        new FILLER.DeadEndFiller($scope.grid, parseInt($scope.params.deadEnds))
+                    $scope.grid = new BlockGrid($scope.params.width, $scope.params.height);
+                    generators = [
+                        new RoomGenerator($scope.grid, $scope.params.roomLimit, $scope.params.maxRoomDimension),
+                        new MazeGenerator($scope.grid),
+                        new DoorGenerator($scope.grid),
+                        new FillGenerator($scope.grid, parseInt($scope.params.deadEnds))
                     ];
                 }
             } else {
-                $scope.grid = new GRID.BlockGrid($scope.params.width, $scope.params.height);
-                builders = [
-                    new CAVE.Generator($scope.grid, $scope.params.iterations, $scope.params.birthThreshold, $scope.params.deathThreshold),
+                $scope.grid = new BlockGrid($scope.params.width, $scope.params.height);
+                generators = [
+                    new CaveGenerator($scope.grid, $scope.params.iterations, $scope.params.birthThreshold, $scope.params.deathThreshold),
                     // TODO Add a filler to flood fill to work out which is the main cavern
                 ];
             }
 
-            $scope.mapGenerator = new MAP.Generator(builders);
+            $scope.mapGenerator = new CompositeGenerator(generators);
 
             $scope.gridCanvas.setCellSize($scope.params.size);
             $scope.gridCanvas.setGrid($scope.grid);

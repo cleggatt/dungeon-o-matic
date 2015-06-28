@@ -1,6 +1,6 @@
-var GRID = require("./grid.js");
+var Point = require("./point.js");
 
-module.exports.Generator = function(grid, iterations, birthThreshold, deathThreshold) {
+var CaveGenerator = function CaveGenerator(grid, iterations, birthThreshold, deathThreshold) {
     // TODO Must be a BlockGrid
     this.grid = grid;
     this.birthThreshold = birthThreshold;
@@ -8,26 +8,26 @@ module.exports.Generator = function(grid, iterations, birthThreshold, deathThres
     this.maxIterations = iterations;
     this.iterations = 0;
 };
-module.exports.Generator.prototype.init = function(acc) {
+CaveGenerator.prototype.init = function(acc) {
 
     for (var x = 0; x < this.grid.cells.length; x++) {
         for (var y = 0; y < this.grid.cells[x].length; y++) {
             if (Math.random() < 0.45) {
-                this.grid.clearCell(new GRID.Point(x, y));
+                this.grid.clearCell(new Point(x, y));
             }
         }
     }
 
     return true;
 };
-module.exports.Generator.prototype.step = function(acc) {
+CaveGenerator.prototype.step = function(acc) {
 
     var oldGrid = this.grid.clone();
 
     for (var x = 0; x < this.grid.cells.length; x++) {
         for (var y = 0; y < this.grid.cells[x].length; y++) {
 
-            var p = new GRID.Point(x, y);
+            var p = new Point(x, y);
 
             var alive = oldGrid.getCell(p).clear;
 
@@ -56,3 +56,5 @@ module.exports.Generator.prototype.step = function(acc) {
 
     return (++this.iterations < this.maxIterations);
 };
+
+module.exports = CaveGenerator;

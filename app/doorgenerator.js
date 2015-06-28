@@ -1,13 +1,14 @@
-var GRID = require("./grid.js");
+var Util = require("./util.js");
+var Point = require("./point.js");
 
-exports.Placer = function(grid) {
+var DoorGenerator = function DoorGenerator(grid) {
     this.grid = grid;
 };
-exports.Placer.prototype.init = function(acc) {
+DoorGenerator.prototype.init = function(acc) {
     this.roomIdx = 0;
     return true;
 };
-exports.Placer.prototype.step = function(acc) {
+DoorGenerator.prototype.step = function(acc) {
 
     var room = acc.rooms[this.roomIdx];
     console.log("Creating door for room #" + this.roomIdx + ": " + room);
@@ -21,37 +22,37 @@ exports.Placer.prototype.step = function(acc) {
     // Top
     var x, y, cell;
     for (x = room.location.x; x <= x2; x++) {
-        cell = this.grid.getCell(new GRID.Point(x, room.location.y - 2));
+        cell = this.grid.getCell(new Point(x, room.location.y - 2));
         if (cell && cell.clear) {
-            possibleDoors.push(new GRID.Point(x, room.location.y - 1));
+            possibleDoors.push(new Point(x, room.location.y - 1));
         }
     }
     // Bottom
     for (x = room.location.x; x <= x2; x++) {
-        cell = this.grid.getCell(new GRID.Point(x, y2 + 2));
+        cell = this.grid.getCell(new Point(x, y2 + 2));
         if (cell && cell.clear) {
-            possibleDoors.push(new GRID.Point(x, y2 + 1));
+            possibleDoors.push(new Point(x, y2 + 1));
         }
     }
     // Left
     for (y = room.location.y; y <= y2; y++) {
-        cell = this.grid.getCell(new GRID.Point(room.location.x - 2, y));
+        cell = this.grid.getCell(new Point(room.location.x - 2, y));
         if (cell && cell.clear) {
-            possibleDoors.push(new GRID.Point(room.location.x - 1, y));
+            possibleDoors.push(new Point(room.location.x - 1, y));
         }
     }
     // Right
     for (y = room.location.y; y <= y2; y++) {
-        cell = this.grid.getCell(new GRID.Point(x2 + 2, y));
+        cell = this.grid.getCell(new Point(x2 + 2, y));
         if (cell && cell.clear) {
-            possibleDoors.push(new GRID.Point(x2 + 1, y));
+            possibleDoors.push(new Point(x2 + 1, y));
         }
     }
 
-    console.log("Possible doors " + GRID.toString(possibleDoors));
+    console.log("Possible doors " + Util.toString(possibleDoors));
 
     // Sanity check
-    if (doors.length > 0) {
+    if (possibleDoors.length > 0) {
         var door = possibleDoors[Math.floor(Math.random() * possibleDoors.length)];
         console.log("Creating door at " + door);
         this.grid.clearCell(door);
@@ -60,3 +61,5 @@ exports.Placer.prototype.step = function(acc) {
     this.roomIdx++;
     return this.roomIdx < acc.rooms.length;
 };
+
+module.exports = DoorGenerator;

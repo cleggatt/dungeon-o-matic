@@ -1,14 +1,15 @@
-// TODO Check what can be module-private
-var GRID = require("./grid.js");
+var Point = require("./point.js");
+var Util = require("./util.js");
+var WalledGrid = require("./walledgrid.js");
 
-module.exports.ValidBlockCellSelector = function(grid) {
+var ValidBlockCellSelector = function ValidBlockCellSelector(grid) {
     this.grid = grid;
 };
-module.exports.ValidBlockCellSelector.prototype.findValidCell = function(startingPoint) {
+ValidBlockCellSelector.prototype.findValidCell = function(startingPoint) {
 
     var neighbourCells = this.grid.getAdjacentNeighbours(startingPoint);
     var numNeighbours = neighbourCells.length;
-    console.log("Checking cells " + GRID.toString(neighbourCells) + "...");
+    console.log("Checking cells " + Util.toString(neighbourCells) + "...");
 
     var count = 0;
     var direction = Math.floor(Math.random() * numNeighbours);
@@ -33,7 +34,7 @@ module.exports.ValidBlockCellSelector.prototype.findValidCell = function(startin
     console.log("Cannot find a valid cell!");
     return null;
 };
-module.exports.ValidBlockCellSelector.prototype.isValidNewLocation = function(cell, direction) {
+ValidBlockCellSelector.prototype.isValidNewLocation = function(cell, direction) {
 
     var directionsToCheck;
     if (direction == 1) {
@@ -62,14 +63,14 @@ module.exports.ValidBlockCellSelector.prototype.isValidNewLocation = function(ce
     return true;
 };
 
-module.exports.ValidWalledCellSelector = function ValidWalledCellSelector(grid) {
+var ValidWalledCellSelector = function ValidWalledCellSelector(grid) {
     this.grid = grid;
 };
-module.exports.ValidWalledCellSelector.prototype.findValidCell = function(startingPoint) {
+ValidWalledCellSelector.prototype.findValidCell = function(startingPoint) {
 
     var neighbourCells = this.grid.getAdjacentNeighbours(startingPoint);
     var numNeighbours = neighbourCells.length;
-    console.log("Checking cells " + GRID.toString(neighbourCells) + "...");
+    console.log("Checking cells " + Util.toString(neighbourCells) + "...");
 
     var count = 0;
     var idx = Math.floor(Math.random() * numNeighbours);
@@ -92,11 +93,11 @@ module.exports.ValidWalledCellSelector.prototype.findValidCell = function(starti
     return null;
 };
 
-module.exports.Generator = function(grid) {
+var MazeGenerator = function MazeGenerator(grid) {
     this.grid = grid;
-    this.cellSelector = (this.grid instanceof GRID.WalledGrid) ? new module.exports.ValidWalledCellSelector(this.grid) : new module.exports.ValidBlockCellSelector(this.grid);
+    this.cellSelector = (this.grid instanceof WalledGrid) ? new ValidWalledCellSelector(this.grid) : new ValidBlockCellSelector(this.grid);
 };
-module.exports.Generator.prototype.init = function(acc) {
+MazeGenerator.prototype.init = function(acc) {
 
     acc.reversing = false;
     acc.history = [];
@@ -106,7 +107,7 @@ module.exports.Generator.prototype.init = function(acc) {
     // Alternatively, start in a valid door position
     var x = Math.floor(Math.random() * this.grid.width);
     var y = Math.floor(Math.random() * this.grid.height);
-    this.location = new GRID.Point(x, y);
+    this.location = new Point(x, y);
 
     acc.currentPoint = this.location;
 
@@ -114,7 +115,7 @@ module.exports.Generator.prototype.init = function(acc) {
 
     return true;
 };
-module.exports.Generator.prototype.step = function(acc) {
+MazeGenerator.prototype.step = function(acc) {
 
     console.log("Current location is " + this.location);
 
@@ -132,7 +133,7 @@ module.exports.Generator.prototype.step = function(acc) {
     acc.currentPoint = this.location;
     return true;
 };
-module.exports.Generator.prototype.moveForwardTo = function(acc, newCell) {
+MazeGenerator.prototype.moveForwardTo = function(acc, newCell) {
     acc.reversing = false;
 
     acc.history.push(this.location);
@@ -141,10 +142,7 @@ module.exports.Generator.prototype.moveForwardTo = function(acc, newCell) {
 
     this.location = newCell.location;
 };
-module.exports.Generator.prototype.convertDirection = function(direction) {
-    return (direction + 2) % 4;
-};
-module.exports.Generator.prototype.moveBack = function(acc) {
+MazeGenerator.prototype.moveBack = function(acc) {
     if (acc.history.length == 0) {
         return false;
     }
@@ -159,3 +157,5 @@ module.exports.Generator.prototype.moveBack = function(acc) {
 
     return true;
 };
+
+module.exports = MazeGenerator;
