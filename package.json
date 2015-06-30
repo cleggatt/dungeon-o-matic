@@ -1,12 +1,16 @@
 {
   "name": "dungeon-o-matic",
   "version": "0.1.0",
-  "private": true,
+  "description" : "Roguelike map generator",
+  "author": "cleggatt <cleggatt@users.noreply.github.com>",
+  "homepage": "https://github.com/cleggatt/dungeon-o-matic",
+  "license" : "MIT",
+  "main": "app/ngmodule.js",
+  "files": [ "app" ],
   "repository": {
     "type": "git",
     "url": "https://github.com/cleggatt/dungeon-o-matic.git"
   },
-  "license": "MIT",
   "devDependencies": {
     "gulp": "~3.9.0",
     "gulp-util": "~3.0.5",
@@ -15,5 +19,6 @@
     "gulp-jasmine": "~2.0.1",
     "jasmine": "~2.3.1",
     "webpack-dev-server": "~1.9.0"
-  }
+  },
+  "private": true
 }
