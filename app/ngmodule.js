@@ -1,8 +1,5 @@
-var BlockGrid = require("./blockgrid.js");
+var DungeonOMatic = require("./dungeonomatic.js");
 var GridCanvas = require("./gridcanvas.js");
-var WalledGrid = require("./walledgrid.js");
-
-var dungeonOmatic = require("./dungeonomatic.js");
 
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
@@ -52,19 +49,9 @@ angular.module('generateApp', [])
             }
             $scope.generating = true;
 
-            if ($scope.params.type == 'Dungeon') {
-
-                if ($scope.params.walls) {
-                    $scope.grid = new WalledGrid($scope.params.width, $scope.params.height);
-                    $scope.mapGenerator = dungeonOmatic.createMaze($scope.grid, $scope.params);
-                } else {
-                    $scope.grid = new BlockGrid($scope.params.width, $scope.params.height);
-                    $scope.mapGenerator = dungeonOmatic.createDungeon($scope.grid, $scope.params)
-                }
-            } else {
-                $scope.grid = new BlockGrid($scope.params.width, $scope.params.height);
-                $scope.mapGenerator = dungeonOmatic.createCave($scope.grid, $scope.params)
-            }
+            var dungeonOMatic = new DungeonOMatic($scope.params);
+            $scope.grid = dungeonOMatic.grid;
+            $scope.mapGenerator = dungeonOMatic.generator;
 
             $scope.gridCanvas.setCellSize($scope.params.size);
             $scope.gridCanvas.setGrid($scope.grid);
