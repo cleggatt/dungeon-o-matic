@@ -1,12 +1,8 @@
 var BlockGrid = require("./blockgrid.js");
-var CaveGenerator = require("./cavegenerator.js");
-var CompositeGenerator = require("./compositegenerator.js");
-var DoorGenerator = require("./doorgenerator.js");
-var FillGenerator = require("./fillgenerator.js");
 var GridCanvas = require("./gridcanvas.js");
-var MazeGenerator = require("./mazegenerator.js");
-var RoomGenerator = require("./roomgenerator.js");
 var WalledGrid = require("./walledgrid.js");
+
+var dungeonOmatic = require("./dungeonomatic.js");
 
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
@@ -56,34 +52,19 @@ angular.module('generateApp', [])
             }
             $scope.generating = true;
 
-            var generators;
-
             if ($scope.params.type == 'Dungeon') {
 
                 if ($scope.params.walls) {
                     $scope.grid = new WalledGrid($scope.params.width, $scope.params.height);
-                    generators = [
-                        new MazeGenerator($scope.grid),
-                        new FillGenerator($scope.grid, parseInt($scope.params.deadEnds))
-                    ];
+                    $scope.mapGenerator = dungeonOmatic.createMaze($scope.grid, $scope.params);
                 } else {
                     $scope.grid = new BlockGrid($scope.params.width, $scope.params.height);
-                    generators = [
-                        new RoomGenerator($scope.grid, $scope.params.roomLimit, $scope.params.maxRoomDimension),
-                        new MazeGenerator($scope.grid),
-                        new DoorGenerator($scope.grid),
-                        new FillGenerator($scope.grid, parseInt($scope.params.deadEnds))
-                    ];
+                    $scope.mapGenerator = dungeonOmatic.createDungeon($scope.grid, $scope.params)
                 }
             } else {
                 $scope.grid = new BlockGrid($scope.params.width, $scope.params.height);
-                generators = [
-                    new CaveGenerator($scope.grid, $scope.params.iterations, $scope.params.birthThreshold, $scope.params.deathThreshold),
-                    // TODO Add a filler to flood fill to work out which is the main cavern
-                ];
+                $scope.mapGenerator = dungeonOmatic.createCave($scope.grid, $scope.params)
             }
-
-            $scope.mapGenerator = new CompositeGenerator(generators);
 
             $scope.gridCanvas.setCellSize($scope.params.size);
             $scope.gridCanvas.setGrid($scope.grid);
