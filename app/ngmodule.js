@@ -99,18 +99,7 @@ angular.module('generateApp', [])
         });
 
         var getPosition = function(event) {
-            var x = event.offsetX;
-            var y = event.offsetY;
-
-            var point = $scope.gridCanvas.convertPoint(x, y);
-            var cell = $scope.grid.getCell(point);
-            if (cell) {
-                console.log("Toggling cell " + cell);
-                if (cell.clear) {
-                    $scope.grid.fillCell(point);
-                } else {
-                    $scope.grid.clearCell(point);
-                }
+            if ($scope.gridCanvas.toggleCell(event.offsetX, event.offsetY)) {
                 $scope.gridCanvas.render();
             }
         };

@@ -1,5 +1,9 @@
 var Point = require("./point.js");
 
+var reverseDirection = function(direction) {
+    return (direction + 2) % 4;
+};
+
 var WalledCell = function WalledCell(point) {
     this.location = point;
     this.clear = false;
@@ -90,7 +94,7 @@ WalledGrid.prototype.clearPath = function(from, to) {
     }
 
     fromCell.walls[direction] = false;
-    toCell.walls[this.reverseDirection(direction)] = false;
+    toCell.walls[reverseDirection(direction)] = false;
 };
 WalledGrid.prototype.fillCell = function(point) {
 
@@ -99,23 +103,20 @@ WalledGrid.prototype.fillCell = function(point) {
     // We need to fill our open wall AND our neighbours open wall
     // If a wall is gone, we know the cell exists
     if (!cell.walls[0]) {
-        this.cells[cell.location.x][cell.location.y - 1].walls[this.reverseDirection(0)] = true;
+        this.cells[cell.location.x][cell.location.y - 1].walls[reverseDirection(0)] = true;
     }
     if (!cell.walls[1]) {
-        this.cells[cell.location.x + 1][cell.location.y].walls[this.reverseDirection(1)] = true;
+        this.cells[cell.location.x + 1][cell.location.y].walls[reverseDirection(1)] = true;
     }
     if (!cell.walls[2]) {
-        this.cells[cell.location.x][cell.location.y + 1].walls[this.reverseDirection(2)] = true;
+        this.cells[cell.location.x][cell.location.y + 1].walls[reverseDirection(2)] = true;
     }
     if (!cell.walls[3]) {
-        this.cells[cell.location.x - 1][cell.location.y].walls[this.reverseDirection(3)] = true;
+        this.cells[cell.location.x - 1][cell.location.y].walls[reverseDirection(3)] = true;
     }
 
     cell.clear = false;
     cell.reset();
-};
-WalledGrid.prototype.reverseDirection = function(direction) {
-    return (direction + 2) % 4;
 };
 
 module.exports = WalledGrid;

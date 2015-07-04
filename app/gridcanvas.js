@@ -27,6 +27,19 @@ GridCanvas.prototype.setAcc = function(acc) {
 GridCanvas.prototype.convertPoint = function(x, y) {
     return new Point(Math.floor(x / this.cellSize), Math.floor(y / this.cellSize));
 };
+GridCanvas.prototype.toggleCell = function(x, y) {
+    var point = this.convertPoint(x, y);
+    var cell = this.grid.getCell(point);
+    if (!cell) {
+         return false;
+    }
+    if (cell.clear) {
+        this.grid.fillCell(point);
+    } else {
+        this.grid.clearCell(point);
+    }
+    return true;
+};
 GridCanvas.prototype.render = function() {
     // TODO Check for grid and acc
 
