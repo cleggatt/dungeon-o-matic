@@ -66,23 +66,25 @@ GridCanvas.prototype.render = function() {
         }
     }
 
-    // Draw any history
-    if (this.acc.history) {
-        ctx.fillStyle = '#0000FF';
-        for (x = 0; x < this.acc.history.length; x++) {
-            var point = this.acc.history[x];
-            ctx.fillRect(point.x * this.cellSize, point.y * this.cellSize, this.cellSize, this.cellSize);
+    if (this.acc) {
+        // Draw any history
+        if (this.acc.history) {
+            ctx.fillStyle = '#0000FF';
+            for (x = 0; x < this.acc.history.length; x++) {
+                var point = this.acc.history[x];
+                ctx.fillRect(point.x * this.cellSize, point.y * this.cellSize, this.cellSize, this.cellSize);
+            }
         }
-    }
 
-    // Draw any active cell
-    if (this.acc.currentPoint) {
-        if (this.acc.reversing) {
-            ctx.fillStyle = '#FF0000';
-        } else {
-            ctx.fillStyle = '#00FF00';
+        // Draw any active cell
+        if (this.acc.currentPoint) {
+            if (this.acc.reversing) {
+                ctx.fillStyle = '#FF0000';
+            } else {
+                ctx.fillStyle = '#00FF00';
+            }
+            ctx.fillRect(this.acc.currentPoint.x * this.cellSize, this.acc.currentPoint.y * this.cellSize, this.cellSize, this.cellSize);
         }
-        ctx.fillRect(this.acc.currentPoint.x * this.cellSize, this.acc.currentPoint.y * this.cellSize, this.cellSize, this.cellSize);
     }
 
     if (this.drawWalls) {

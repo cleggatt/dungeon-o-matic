@@ -1,94 +1,106 @@
+"use strict";
+
+var Animator = require("./animator.js");
 var DungeonOMatic = require("./dungeonomatic.js");
 var GridCanvas = require("./gridcanvas.js");
+var NgScheduler = require("./ngscheduler.js");
+
 
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
+
         $scope.params = {
             type: 'Dungeon',
             walls: true,
-            width: 50,
-            height: 50,
+            width: 10,
+            height: 10,
             size: 15,
             roomLimit : 15,
             maxRoomDimension: 10,
             deadEnds: 50,
-            speed : 50,
+            speed : 500,
             birthThreshold: 3,
             deathThreshold: 4,
-            iterations : 5};
-
-        $scope.gridCanvas = new GridCanvas(document.getElementById("map"));
-
-        $scope.generating = false;
-        $scope.paused = false;
-
-        var animator = function () {
-            var stepsRemain = $scope.mapGenerator.step();
-            if (!stepsRemain) {
-                $scope.stopGeneration();
-            }
-            $scope.gridCanvas.render();
+            iterations : 5
         };
 
-        var animatorPromise;
-        var startAnimator = function () {
-            $scope.paused = false;
-            animatorPromise = $interval(animator, $scope.params.speed);
-        };
-        var stopAnimator = function () {
-            $scope.paused = true;
-            if (angular.isDefined(animatorPromise)) {
-                $interval.cancel(animatorPromise);
-                animatorPromise = undefined;
+        var gridCanvas = new GridCanvas(document.getElementById("map"));
+        var getPosition = function(event) {
+            if (gridCanvas.toggleCell(event.offsetX, event.offsetY)) {
+                gridCanvas.render();
             }
         };
+        gridCanvas.canvas.addEventListener("mousedown", getPosition, false);
 
-        $scope.startGeneration = function() {
-            if ($scope.generating) {
+        var scheduler = new NgScheduler($interval);
+
+        var animator;
+        var updateStateFlags = function() {
+            if (animator == null) {
+                $scope.generating = false;
+                $scope.paused = false;
+            } else {
+                $scope.generating = animator.running;
+                $scope.paused = animator.paused;
+            }
+        };
+        var complete = function() {
+            animator = null;
+            gridCanvas.setAcc(null);
+            updateStateFlags();
+            gridCanvas.render();
+        };
+
+        $scope.start = function() {
+            if (animator != null) {
                 return;
             }
-            $scope.generating = true;
 
             var dungeonOMatic = new DungeonOMatic($scope.params);
-            $scope.grid = dungeonOMatic.grid;
-            $scope.mapGenerator = dungeonOMatic.generator;
 
-            $scope.gridCanvas.setCellSize($scope.params.size);
-            $scope.gridCanvas.setGrid($scope.grid);
-            $scope.gridCanvas.setAcc($scope.mapGenerator.acc);
+            // Wire up the grid canvas
+            gridCanvas.setGrid(dungeonOMatic.grid);
+            gridCanvas.setAcc(dungeonOMatic.generator.acc);
+            gridCanvas.setCellSize($scope.params.size);
 
-            startAnimator();
+            // Set up the animator callbacks
+            var animate = function () {
+                var stepsRemain = dungeonOMatic.generator.step();
+                gridCanvas.render();
+                return stepsRemain;
+            };
+
+            animator = new Animator($scope.params.speed, scheduler, animate, complete);
+            animator.start();
+
+            updateStateFlags();
         };
 
-        $scope.pauseGeneration = function() {
-            if ($scope.paused) {
-                startAnimator();
-            } else {
-                stopAnimator ();
+        $scope.pause = function() {
+            if (animator != null) {
+                animator.pause();
+                updateStateFlags();
             }
         };
 
-        $scope.stepGeneration = function() {
-            animator();
+        $scope.step = function() {
+            if (animator != null) {
+                animator.step();
+                updateStateFlags();
+            }
         };
 
-        // This is an artificial state - it's just paused with the flags set so as no to allow un-pausing
-        $scope.stopGeneration = function() {
-            stopAnimator();
-            $scope.generating = false;
-            $scope.paused = false;
+        $scope.stop = function() {
+            if (animator != null) {
+                animator.stop();
+            }
         };
 
         $scope.$on('$destroy', function() {
-            if (angular.isDefined(animatorPromise)) {
-                $interval.cancel(animatorPromise);
+            if (animator != null) {
+                animator.stop();
             }
         });
 
-        var getPosition = function(event) {
-            if ($scope.gridCanvas.toggleCell(event.offsetX, event.offsetY)) {
-                $scope.gridCanvas.render();
-            }
-        };
-        $scope.gridCanvas.canvas.addEventListener("mousedown", getPosition, false);
+        updateStateFlags();
     }]);

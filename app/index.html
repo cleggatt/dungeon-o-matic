@@ -107,10 +107,10 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10 btn-group">
-                            <button ng-click="startGeneration()" ng-disabled="generating" class="btn btn-success">Start</button>
-                            <button ng-click="pauseGeneration()" ng-disabled="!generating" ng-class="paused ? 'active' : ''" class="btn btn-info">Pause</button>
-                            <button ng-click="stepGeneration()" ng-disabled="!(generating && paused)" class="btn btn-warning">Step</button>
-                            <button ng-click="stopGeneration()" ng-disabled="!generating" class="btn btn-danger">Stop</button>
+                            <button ng-click="start()" ng-disabled="generating" class="btn btn-success">Start</button>
+                            <button ng-click="pause()" ng-disabled="!generating" ng-class="paused ? 'active' : ''" class="btn btn-info">Pause</button>
+                            <button ng-click="step()" ng-disabled="!(generating && paused)" class="btn btn-warning">Step</button>
+                            <button ng-click="stop()" ng-disabled="!generating" class="btn btn-danger">Stop</button>
                         </div>
                     </div>
                 </form>
