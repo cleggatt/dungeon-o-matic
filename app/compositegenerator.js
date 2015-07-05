@@ -1,3 +1,5 @@
+"use strict";
+
 var CompositeGenerator = function CompositeGenerator(generators) {
 
     this.acc = {};

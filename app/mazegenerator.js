@@ -1,3 +1,5 @@
+"use strict";
+
 var Point = require("./point.js");
 var Util = require("./util.js");
 var WalledGrid = require("./walledgrid.js");

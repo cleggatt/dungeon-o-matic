@@ -1,3 +1,5 @@
+"use strict";
+
 var Point = require("./point.js");
 
 var CaveGenerator = function CaveGenerator(grid, iterations, birthThreshold, deathThreshold) {

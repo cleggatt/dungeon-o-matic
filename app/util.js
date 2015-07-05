@@ -1,3 +1,5 @@
+"use strict";
+
 var toString = function toString(o) {
     if (o instanceof Array) {
         var buff = "";

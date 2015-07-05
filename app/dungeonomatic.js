@@ -1,3 +1,5 @@
+"use strict";
+
 var CaveGenerator = require("./cavegenerator.js");
 var CompositeGenerator = require("./compositegenerator.js");
 var DoorGenerator = require("./doorgenerator.js");

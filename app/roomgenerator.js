@@ -1,3 +1,5 @@
+"use strict";
+
 var Point = require("./point.js");
 var Rect = require("./rect.js");
 var Util = require("./util.js");

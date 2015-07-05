@@ -1,3 +1,5 @@
+"use strict";
+
 var Rect = function Rect(point, width, height) {
     this.location = point;
     this.width = width;

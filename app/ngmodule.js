@@ -5,7 +5,6 @@ var DungeonOMatic = require("./dungeonomatic.js");
 var GridCanvas = require("./gridcanvas.js");
 var NgScheduler = require("./ngscheduler.js");
 
-
 angular.module('generateApp', [])
     .controller('MazeController', ['$scope', '$interval', function($scope, $interval) {
 
