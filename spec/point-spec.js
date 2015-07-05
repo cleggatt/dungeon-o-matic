@@ -1,4 +1,9 @@
-var Point = require('../app/point.js').Point;
+/* global describe */
+/* global it */
+/* global expect */
+"use strict";
+
+var Point = require('../app/point.js');
 
 describe("A point", function() {
     it("should equal itself", function() {

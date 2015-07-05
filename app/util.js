@@ -14,7 +14,7 @@ var toString = function toString(o) {
         return buff.slice(0, -2);
 
     } else {
-        return o.toString()
+        return o.toString();
     }
 };
 

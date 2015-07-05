@@ -49,7 +49,7 @@ RoomGenerator.prototype.step = function(acc) {
         this.failures++;
     }
 
-    console.log("Placed " + this.count + "/" + this.limit + ", failed " + this.failures + "/" + (this.count * this.failureRatio))
+    console.log("Placed " + this.count + "/" + this.limit + ", failed " + this.failures + "/" + (this.count * this.failureRatio));
 
     return ((this.potentialRooms.length > 0) && (this.failures <= (this.count * this.failureRatio)));
 };

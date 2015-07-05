@@ -1,3 +1,6 @@
+/* global angular */
+/* global document */
+
 "use strict";
 
 var Animator = require("./animator.js");
@@ -33,7 +36,7 @@ angular.module('generateApp', [])
 
         var scheduler = new NgScheduler($interval);
 
-        var animator;
+        var animator = null;
         var updateStateFlags = function() {
             if (animator == null) {
                 $scope.generating = false;

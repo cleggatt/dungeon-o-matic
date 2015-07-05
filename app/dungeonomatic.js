@@ -44,11 +44,11 @@ var DungeonOMatic = function DungeonOMatic(params) {
             this.generator = createMaze(this.grid, params);
         } else {
             this.grid = new BlockGrid(params.width, params.height);
-            this.generator = createDungeon(this.grid, params)
+            this.generator = createDungeon(this.grid, params);
         }
     } else {
         this.grid = new BlockGrid(params.width, params.height);
-        this.generator = createCave(this.grid, params)
+        this.generator = createCave(this.grid, params);
     }
 };
 

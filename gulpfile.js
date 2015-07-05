@@ -1,14 +1,21 @@
 var gulp = require('gulp');
 var gutil = require("gulp-util");
+var jasmine = require('gulp-jasmine');
+var jshint = require('gulp-jshint');
 var webpack = require("webpack");
 var WebpackDevServer = require("webpack-dev-server");
-var jasmine = require('gulp-jasmine');
 
 var webpackConfig = require("./webpack.config.js");
 
-gulp.task('default', function () {
+gulp.task('default', ['lint'], function () {
     return gulp.src('spec/*.js')
         .pipe(jasmine());
+});
+
+gulp.task('lint', function() {
+    return gulp.src(['app/*.js', 'spec/*.js', '*.js'])
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
 });
 
 gulp.task("webpack", function(callback) {
