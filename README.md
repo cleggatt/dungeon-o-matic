@@ -1,2 +1,2 @@
-Dungeon-O-Matic [![Build Status](https://secure.travis-ci.org/cleggatt/dungeon-0-matic.png)](http://travis-ci.org/cleggatt/dungeon-0-matic)
+Dungeon-O-Matic [![Build Status](https://secure.travis-ci.org/cleggatt/dungeon-o-matic.png)](http://travis-ci.org/cleggatt/dungeon-o-matic)
 ===================================
