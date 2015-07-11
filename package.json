@@ -24,5 +24,8 @@
     "webpack": "~1.9.11",
     "webpack-dev-server": "~1.9.0"
   },
-  "private": true
+  "private": true,
+  "scripts": {
+    "test": "./gulpw webpack"
+  }
 }

@@ -7,9 +7,7 @@ var WebpackDevServer = require("webpack-dev-server");
 
 var webpackConfig = require("./webpack.config.js");
 
-gulp.task('default', ['lint'], function () {
-    return gulp.src('spec/*.js')
-        .pipe(jasmine());
+gulp.task('default', ['webpack'], function () {
 });
 
 gulp.task('lint', function() {
@@ -18,7 +16,12 @@ gulp.task('lint', function() {
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task("webpack", function(callback) {
+gulp.task('test', ['lint'], function () {
+    return gulp.src('spec/*.js')
+        .pipe(jasmine());
+});
+
+gulp.task("webpack", ['test'], function(callback) {
     webpack(webpackConfig, function(err, stats) {
         if(err) throw new gutil.PluginError("webpack", err);
         gutil.log("[webpack]", stats.toString({
