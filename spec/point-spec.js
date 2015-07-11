@@ -49,7 +49,7 @@ describe("A point", function() {
         // Verify
         expect(result).toBe(false, 'The result of p1.equals(p2)');
     });
-    it("should not equal another point with a differnt x but the same y coordinate", function() {
+    it("should not equal another point with a different x but the same y coordinate", function() {
         // Set up
         var p1 = new Point(17, 42);
         var p2 = new Point(71, 42);
@@ -59,5 +59,15 @@ describe("A point", function() {
 
         // Verify
         expect(result).toBe(false, 'The result of p1.equals(p2)');
+    });
+    it("should return a string representation of itseld", function() {
+        // Set up
+        var p1 = new Point(17, 42);
+
+        // Exercise
+        var result = p1.toString();
+
+        // Verify
+        expect(result).toBe('(17, 42)', 'The result of p1.toString()');
     });
 });
