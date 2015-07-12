@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-    <script type="text/javascript" src="bundle.js"></script>
-</head>
+<script src="bundle-d109f952636582424701.js"></script></head>
 <body>
 <div class="container-fluid" ng-controller="MazeController">
     <div class="row">
@@ -108,10 +107,10 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10 btn-group">
-                            <button ng-click="startGeneration()" ng-disabled="generating" class="btn btn-success">Start</button>
-                            <button ng-click="pauseGeneration()" ng-disabled="!generating" ng-class="paused ? 'active' : ''" class="btn btn-info">Pause</button>
-                            <button ng-click="stepGeneration()" ng-disabled="!(generating && paused)" class="btn btn-warning">Step</button>
-                            <button ng-click="stopGeneration()" ng-disabled="!generating" class="btn btn-danger">Stop</button>
+                            <button ng-click="start()" ng-disabled="generating" class="btn btn-success">Start</button>
+                            <button ng-click="pause()" ng-disabled="!generating" ng-class="paused ? 'active' : ''" class="btn btn-info">Pause</button>
+                            <button ng-click="step()" ng-disabled="!(generating && paused)" class="btn btn-warning">Step</button>
+                            <button ng-click="stop()" ng-disabled="!generating" class="btn btn-danger">Stop</button>
                         </div>
                     </div>
                 </form>
