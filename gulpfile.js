@@ -1,5 +1,7 @@
 var gulp = require('gulp');
 var gutil = require("gulp-util");
+
+var del = require('del');
 var istanbul = require('gulp-istanbul');
 var jasmine = require('gulp-jasmine');
 var jshint = require('gulp-jshint');
@@ -9,6 +11,10 @@ var WebpackDevServer = require("webpack-dev-server");
 var webpackConfig = require("./webpack.config.js");
 
 gulp.task('default', ['webpack'], function () {
+});
+
+gulp.task('clean', function (callback) {
+    del(['build/'], callback);
 });
 
 gulp.task('lint', function() {
@@ -34,7 +40,7 @@ gulp.task('test-cover', ['lint'], function (callback) {
         });
 });
 
-gulp.task("webpack", ['test-cover'], function(callback) {
+gulp.task("webpack", ['clean', 'test-cover'], function(callback) {
     webpack(webpackConfig, function(err, stats) {
         if(err) throw new gutil.PluginError("webpack", err);
         gutil.log("[webpack]", stats.toString({
