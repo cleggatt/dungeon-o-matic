@@ -14,13 +14,13 @@ angular.module('generateApp', [])
         $scope.params = {
             type: 'Dungeon',
             walls: true,
-            width: 10,
-            height: 10,
+            width: 50,
+            height: 50,
             size: 15,
             roomLimit : 15,
             maxRoomDimension: 10,
             deadEnds: 50,
-            speed : 500,
+            speed : 50,
             birthThreshold: 3,
             deathThreshold: 4,
             iterations : 5
