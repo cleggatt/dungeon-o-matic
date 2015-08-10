@@ -14,6 +14,7 @@
     "url": "https://github.com/cleggatt/dungeon-o-matic.git"
   },
   "devDependencies": {
+    "coveralls": "^2.11.3",
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-istanbul": "^0.10.0",
@@ -29,6 +30,6 @@
   },
   "private": true,
   "scripts": {
-    "test": "./gulpw webpack"
+    "test": "./gulpw webpack && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   }
 }
